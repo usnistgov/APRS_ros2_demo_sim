@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:macro name="aprs_fanuc" params="
+    parent
+">
+
+    <!-- Inclue fanuc robot macro -->
+    <xacro:include filename="$(find aprs_description)/urdf/fanuc/fanuc_lrmate200id_macro.xacro"/>
+
+    <!-- Include ROS2 Control macro -->
+    <xacro:include filename="$(find aprs_description)/urdf/fanuc/aprs_fanuc.ros2_control.xacro"/>
+
+    <xacro:property name="initial_positions_file" default="$(find aprs_description)/config/fanuc_initial_positions.yaml"/>
+
+    <!-- Run fanuc macro -->
+    <xacro:fanuc_lrmate200id
+        parent="${parent}">
+    </xacro:fanuc_lrmate200id>
+
+    <!-- Run fanuc macro -->
+    <xacro:aprs_fanuc_ros2_control
+      name="fanuc"
+      initial_positions="${xacro.load_yaml(initial_positions_file)}">
+    </xacro:aprs_fanuc_ros2_control>
+
+  </xacro:macro>
+</robot>

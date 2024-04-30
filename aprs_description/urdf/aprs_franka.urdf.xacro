@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_lab_robots">
+
+  <link name="world"/>
+
+  <joint name = "franka_world_to_base" type = "fixed">
+    <origin rpy = "0 0 0" xyz = "-1.3145625 -1.375 0.8397875"/>
+    <parent link = "world"/>
+    <child link = "aprs_franka_base_link"/>
+  </joint>
+
+  <xacro:include filename="$(find aprs_description)/urdf/franka/aprs_franka_macro.xacro"/>
+    <!-- ROS2 Control Plugin -->
+  <xacro:arg name="franka_controller" default="$(find aprs_description)/config/individual_controllers/franka_controller.yaml" />
+  <!-- <xacro:arg name="controllers" default="$(find aprs_description)/config/ns_robot_controllers.yaml" /> -->
+
+  <xacro:aprs_franka></xacro:aprs_franka>
+
+  <gazebo>
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <ros>
+        <namespace>franka</namespace>
+      </ros>
+      <parameters>$(arg franka_controller)</parameters>
+      <load_params_directly>true</load_params_directly>
+      <controller name="joint_trajectory_controller" params_file="$(find aprs_description)/config/individual_controllers/franka_controller.yaml"/>
+    </plugin>
+  </gazebo>
+
+</robot>
