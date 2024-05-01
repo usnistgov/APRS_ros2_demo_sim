@@ -35,7 +35,7 @@ void ConveyorPlugin::Configure(const gz::sim::Entity &_entity,
 
   std::vector<std::string> arguments = {"--ros-args"};
   arguments.push_back(RCL_PARAM_FILE_FLAG);
-  arguments.push_back(ament_index_cpp::get_package_share_directory("aprs_description")+"/config/ns_robot_controllers.yaml");
+  arguments.push_back(ament_index_cpp::get_package_share_directory("aprs_description")+"/config/all_robot_controllers.yaml");
   
   std::vector<const char *> argv;
   for (const auto & arg : arguments) {
@@ -43,7 +43,7 @@ void ConveyorPlugin::Configure(const gz::sim::Entity &_entity,
   }
   
   if (!rclcpp::ok(conveyor_context)){
-    rclcpp::init(0, nullptr);
+    rclcpp::init(static_cast<int>(argv.size()), argv.data());
   }
 
   std::string node_name = "conveyor_ros_node";
