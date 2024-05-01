@@ -101,6 +101,12 @@ def launch_setup(context, *args, **kwargs):
             {"use_sim_time": True},
         ],
     )
+    
+    move_group = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [FindPackageShare("aprs_moveit_config"), "/launch", "/move_group.launch.py"]
+        )
+    )
 
     nodes_to_start = [
         gz,
@@ -110,7 +116,8 @@ def launch_setup(context, *args, **kwargs):
         ur_controller,
         fanuc_controller,
         franka_controller,
-        motoman_controller
+        motoman_controller,
+        move_group
     ]
 
     return nodes_to_start
