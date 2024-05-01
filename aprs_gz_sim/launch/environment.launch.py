@@ -28,12 +28,7 @@ def launch_setup(context, *args, **kwargs):
 
     robot_description = {"robot_description": robot_description_content}
 
-    robot_state_publisher_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="both",
-        parameters=[{"use_sim_time": True}, robot_description],
-    )
+    
 
     world_path = os.path.join(get_package_share_directory('aprs_gz_sim'), 'worlds', 'lab.sdf')
     
@@ -43,82 +38,160 @@ def launch_setup(context, *args, **kwargs):
                               'launch', 'gz_sim.launch.py')]),
             launch_arguments=[('gz_args', [' -r -v 4 '+ world_path])])
 
-    gz_spawn_entity = Node(
-        package='ros_gz_sim',
-        executable='create',
-        output='screen',
-        arguments=['-string', doc.toxml(),
-                   '-name', 'aprs_robots',
-                   '-allow_renaming', 'true'],
-    )
+    use_seperate_descriptions = str(LaunchConfiguration("use_seperate_descriptions").perform(context)).lower() == "true"
     
-    joint_state_broadcaster = Node(
-        package="controller_manager",
-        executable="spawner",
-        name="joint_state_broadcaster_spawner",
-        arguments=["joint_state_broadcaster"],
-        parameters=[
-            {"use_sim_time": True},
-        ],
-    )
-    
-    ur_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        name="ur_controller_spawner",
-        arguments=["ur_joint_trajectory_controller"],
-        parameters=[
-            {"use_sim_time": True},
-        ],
-    )
-    
-    fanuc_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        name="fanuc_controller_spawner",
-        arguments=["fanuc_joint_trajectory_controller"],
-        parameters=[
-            {"use_sim_time": True},
-        ],
-    )
-    
-    franka_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        name="franka_controller_spawner",
-        arguments=["franka_joint_trajectory_controller"],
-        parameters=[
-            {"use_sim_time": True},
-        ],
-    )
-    
-    motoman_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        name="motoman_controller_spawner",
-        arguments=["motoman_joint_trajectory_controller"],
-        parameters=[
-            {"use_sim_time": True},
-        ],
-    )
-    
-    move_group = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [FindPackageShare("aprs_moveit_config"), "/launch", "/move_group.launch.py"]
-        )
-    )
+    if use_seperate_descriptions:
+        robot_names = ["fanuc", "franka", "motoman", "ur"]
+        robot_urdf_docs = {name:xacro.process_file(os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{name}.urdf.xacro')) for name in robot_names}
+        robot_descriptions = {name:{"robot_description":robot_urdf_docs[name].toprettyxml(indent='  ')} for name in robot_names}
+        
+        robot_state_publishers = []
+        for robot_name in robot_names:
+            robot_state_publishers.append(Node(
+                package="robot_state_publisher",
+                executable="robot_state_publisher",
+                namespace=robot_name,
+                output="both",
+                parameters=[{"use_sim_time": True}, robot_descriptions[robot_name]],
+            ))
 
-    nodes_to_start = [
-        gz,
-        robot_state_publisher_node,
-        gz_spawn_entity,
-        joint_state_broadcaster,
-        ur_controller,
-        fanuc_controller,
-        franka_controller,
-        motoman_controller,
-        move_group
-    ]
+        gz_spawners = []
+        for robot_name in robot_names:
+            gz_spawners.append(Node(
+                package='ros_gz_sim',
+                executable='create',
+                output='screen',
+                namespace=f"{robot_name}",
+                name=f"{robot_name}_spawner",
+                arguments=['-string', robot_urdf_docs[robot_name].toxml(),
+                        '-name', f'aprs_{robot_name}',
+                        '-allow_renaming', 'true'],
+            ))
+        
+        joint_state_broadcasters = []
+        for robot_name in robot_names:
+            joint_state_broadcasters.append(Node(
+                package="controller_manager",
+                executable="spawner",
+                name=f"{robot_name}_joint_state_broadcaster_spawner",
+                arguments=["joint_state_broadcaster","-c", f"/{robot_name}/controller_manager"],
+                parameters=[
+                    {"use_sim_time": True},
+                ],
+            ))
+        
+        controller_spawner_nodes = []
+        for robot_name in robot_names:
+            controller_spawner_nodes.append(Node(
+                package="controller_manager",
+                executable="spawner",
+                name=f"{robot_name}_controller_spawner",
+                arguments=["joint_trajectory_controller", 
+                    "-c", f"/{robot_name}/controller_manager"],
+                parameters=[
+                    {"use_sim_time": True},
+                ],
+            ))
+            
+        move_groups = []
+        for robot_name in robot_names:
+            move_groups.append(IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                [FindPackageShare(f"aprs_{robot_name}_moveit_config"), "/launch", "/move_group.launch.py"]
+            )))
+
+        nodes_to_start = [
+            gz,
+            *controller_spawner_nodes,
+            *robot_state_publishers,
+            *gz_spawners,
+            *joint_state_broadcasters,
+            *move_groups
+        ]
+    else:
+        robot_state_publisher_node = Node(
+            package="robot_state_publisher",
+            executable="robot_state_publisher",
+            output="both",
+            parameters=[{"use_sim_time": True}, robot_description],
+        )
+        
+        gz_spawn_entity = Node(
+            package='ros_gz_sim',
+            executable='create',
+            output='screen',
+            arguments=['-string', doc.toxml(),
+                    '-name', 'aprs_robots',
+                    '-allow_renaming', 'true'],
+        )
+        
+        joint_state_broadcaster = Node(
+            package="controller_manager",
+            executable="spawner",
+            name="joint_state_broadcaster_spawner",
+            arguments=["joint_state_broadcaster"],
+            parameters=[
+                {"use_sim_time": True},
+            ],
+        )
+        
+        ur_controller = Node(
+            package="controller_manager",
+            executable="spawner",
+            name="ur_controller_spawner",
+            arguments=["ur_joint_trajectory_controller"],
+            parameters=[
+                {"use_sim_time": True},
+            ],
+        )
+        
+        fanuc_controller = Node(
+            package="controller_manager",
+            executable="spawner",
+            name="fanuc_controller_spawner",
+            arguments=["fanuc_joint_trajectory_controller"],
+            parameters=[
+                {"use_sim_time": True},
+            ],
+        )
+        
+        franka_controller = Node(
+            package="controller_manager",
+            executable="spawner",
+            name="franka_controller_spawner",
+            arguments=["franka_joint_trajectory_controller"],
+            parameters=[
+                {"use_sim_time": True},
+            ],
+        )
+        
+        motoman_controller = Node(
+            package="controller_manager",
+            executable="spawner",
+            name="motoman_controller_spawner",
+            arguments=["motoman_joint_trajectory_controller"],
+            parameters=[
+                {"use_sim_time": True},
+            ],
+        )
+        
+        move_group = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                [FindPackageShare("aprs_moveit_config"), "/launch", "/move_group.launch.py"]
+            )
+        )
+
+        nodes_to_start = [
+            gz,
+            robot_state_publisher_node,
+            gz_spawn_entity,
+            joint_state_broadcaster,
+            ur_controller,
+            fanuc_controller,
+            franka_controller,
+            motoman_controller,
+            move_group
+        ]
 
     return nodes_to_start
 
@@ -126,24 +199,8 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
     declared_arguments = []
 
-    # declared_arguments.append(
-    #     DeclareLaunchArgument("trial_name", default_value="kitting", description="name of trial")
-    # )
-
-    # declared_arguments.append(
-    #     DeclareLaunchArgument("competitor_pkg", default_value="ariac_gazebo", description="name of competitor package"))
-
-    # declared_arguments.append(
-    #     DeclareLaunchArgument("sensor_config", default_value="sensors", description="name of user configuration file")
-    # )
-
-    # declared_arguments.append(
-    #     DeclareLaunchArgument("dev_mode", default_value="false", description="run simulation in dev mode")
-    # )
-
-    # declared_arguments.append(
-    #     DeclareLaunchArgument("record_state", default_value="false", description="record a gazebo state.log")
-    # )
-
+    declared_arguments.append(
+        DeclareLaunchArgument("use_seperate_descriptions", default_value="false", description="use seperate robot descriptions")
+    )
 
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
