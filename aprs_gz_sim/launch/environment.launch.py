@@ -97,7 +97,7 @@ def launch_setup(context, *args, **kwargs):
         for robot_name in robot_names:
             move_groups.append(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                [FindPackageShare(f"aprs_{robot_name}_moveit_config"), "/launch", "/move_group.launch.py"]
+                [FindPackageShare(f"aprs_{robot_name}_moveit_config"), "/launch", f"/{robot_name}_move_group.launch.py"]
             )))
 
         nodes_to_start = [
