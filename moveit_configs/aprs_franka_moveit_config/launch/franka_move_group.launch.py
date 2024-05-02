@@ -11,11 +11,11 @@ from ament_index_python.packages import get_package_share_directory
 
 def launch_setup(context, *args, **kwargs):
     
-    urdf = os.path.join(get_package_share_directory("aprs_description"), "urdf/aprs_lab_robots.urdf.xacro")
+    urdf = os.path.join(get_package_share_directory("aprs_description"), "urdf/aprs_franka.urdf.xacro")
 
     moveit_config = (
         MoveItConfigsBuilder("aprs_franka", package_name="aprs_franka_moveit_config")
-        .robot_description(urdf)
+        .robot_description(file_path=urdf)
         .robot_description_semantic(file_path="config/aprs_lab_robots.srdf")
         .trajectory_execution(file_path="config/controllers.yaml")
         .planning_pipelines(pipelines=["ompl"])
@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
+        namespace="franka",
         parameters=[
             moveit_config.to_dict(),
             {"use_sim_time": True}

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_robots">
-    <group name="aprs_ur">
-      <chain base_link="base_link" tip_link="tool0" />
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_ur">
+    <group name="ur_arm">
+      <chain base_link="world" tip_link="tool0" />
     </group>
 
-    <group_state name="home" group="aprs_ur">
+    <group_state name="home" group="ur_arm">
       <joint name="elbow_joint" value="0" />
       <joint name="shoulder_lift_joint" value="-1.5707" />
       <joint name="shoulder_pan_joint" value="0" />
@@ -12,7 +12,7 @@
       <joint name="wrist_2_joint" value="0" />
       <joint name="wrist_3_joint" value="0" />
     </group_state>
-    <group_state name="up" group="aprs_ur">
+    <group_state name="up" group="ur_arm">
       <joint name="elbow_joint" value="0" />
       <joint name="shoulder_lift_joint" value="-1.5707" />
       <joint name="shoulder_pan_joint" value="0" />
@@ -20,7 +20,7 @@
       <joint name="wrist_2_joint" value="0" />
       <joint name="wrist_3_joint" value="0" />
     </group_state>
-    <group_state name="test_configuration" group="aprs_ur">
+    <group_state name="test_configuration" group="ur_arm">
       <joint name="elbow_joint" value="1.4" />
       <joint name="shoulder_lift_joint" value="-1.62" />
       <joint name="shoulder_pan_joint" value="1.54" />

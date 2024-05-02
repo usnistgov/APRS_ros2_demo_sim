@@ -58,7 +58,7 @@ planner_configs:
   PRMstarkConfigDefault:
     type: geometric::PRMstar
 
-aprs_ur:
+ur_arm:
   planner_configs:
     - SBLkConfigDefault
     - ESTkConfigDefault

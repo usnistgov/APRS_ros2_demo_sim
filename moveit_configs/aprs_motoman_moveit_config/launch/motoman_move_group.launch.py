@@ -11,7 +11,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def launch_setup(context, *args, **kwargs):
     
-    urdf = os.path.join(get_package_share_directory("aprs_description"), "urdf/aprs_lab_robots.urdf.xacro")
+    urdf = os.path.join(get_package_share_directory("aprs_description"), "urdf/aprs_motoman.urdf.xacro")
 
     moveit_config = (
         MoveItConfigsBuilder("aprs_motoman", package_name="aprs_motoman_moveit_config")
@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
+        namespace="motoman",
         parameters=[
             moveit_config.to_dict(),
             {"use_sim_time": True}

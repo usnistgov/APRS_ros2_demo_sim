@@ -28,8 +28,6 @@ def launch_setup(context, *args, **kwargs):
 
     robot_description = {"robot_description": robot_description_content}
 
-    
-
     world_path = os.path.join(get_package_share_directory('aprs_gz_sim'), 'worlds', 'lab.sdf')
     
     gz = IncludeLaunchDescription(
@@ -41,7 +39,8 @@ def launch_setup(context, *args, **kwargs):
     use_seperate_descriptions = str(LaunchConfiguration("use_seperate_descriptions").perform(context)).lower() == "true"
     
     if use_seperate_descriptions:
-        robot_names = ["fanuc", "franka", "motoman", "ur"]
+        # robot_names = ["fanuc", "franka", "motoman", "ur"]
+        robot_names = ["ur"]
         robot_urdf_docs = {name:xacro.process_file(os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{name}.urdf.xacro')) for name in robot_names}
         robot_descriptions = {name:{"robot_description":robot_urdf_docs[name].toprettyxml(indent='  ')} for name in robot_names}
         
@@ -86,6 +85,7 @@ def launch_setup(context, *args, **kwargs):
                 package="controller_manager",
                 executable="spawner",
                 name=f"{robot_name}_controller_spawner",
+                remappings=[(f"/joint_states",f"/{robot_name}_joint_states")],
                 arguments=["joint_trajectory_controller", 
                     "-c", f"/{robot_name}/controller_manager"],
                 parameters=[
