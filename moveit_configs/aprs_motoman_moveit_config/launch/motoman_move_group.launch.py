@@ -26,7 +26,7 @@ def launch_setup(context, *args, **kwargs):
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
-        namespace="motoman",
+        # namespace="motoman",
         output="screen",
         parameters=[
             moveit_config.to_dict(),

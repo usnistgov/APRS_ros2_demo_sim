@@ -7,6 +7,14 @@ planning_scene_monitor_options:
   monitored_planning_scene_topic: "/monitored_planning_scene_1"
   wait_for_initial_state_timeout: 10.0
 
+planning_scene_monitor_parameters:
+  publish_planning_scene: true
+  publish_geometry_updates: true
+  publish_state_updates: true
+  publish_transforms_updates: true
+  publish_robot_description: true
+  publish_robot_description_semantic: true
+  
 planning_pipelines:
   pipeline_names: ["ompl"]
 

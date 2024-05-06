@@ -41,7 +41,7 @@ def launch_setup(context, *args, **kwargs):
     use_seperate_descriptions = str(LaunchConfiguration("use_seperate_descriptions").perform(context)).lower() == "true"
     
     if use_seperate_descriptions:
-        robot_names = ["ur"]
+        robot_names = ["fanuc"]
         robot_urdf_docs = {name:xacro.process_file(os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{name}.urdf.xacro')) for name in robot_names}
         robot_descriptions = {name:{"robot_description":robot_urdf_docs[name].toprettyxml(indent='  ')} for name in robot_names}
         
