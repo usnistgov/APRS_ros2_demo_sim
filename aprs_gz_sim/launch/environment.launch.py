@@ -24,7 +24,7 @@ def launch_setup(context, *args, **kwargs):
 
     robot_description_content = doc.toprettyxml(indent='  ')
 
-    print(robot_description_content)
+    # print(robot_description_content)
 
     robot_description = {"robot_description": robot_description_content}
 
@@ -41,7 +41,7 @@ def launch_setup(context, *args, **kwargs):
     use_seperate_descriptions = str(LaunchConfiguration("use_seperate_descriptions").perform(context)).lower() == "true"
     
     if use_seperate_descriptions:
-        robot_names = ["fanuc", "franka", "motoman", "ur"]
+        robot_names = ["ur"]
         robot_urdf_docs = {name:xacro.process_file(os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{name}.urdf.xacro')) for name in robot_names}
         robot_descriptions = {name:{"robot_description":robot_urdf_docs[name].toprettyxml(indent='  ')} for name in robot_names}
         
@@ -50,7 +50,11 @@ def launch_setup(context, *args, **kwargs):
             robot_state_publishers.append(Node(
                 package="robot_state_publisher",
                 executable="robot_state_publisher",
-                namespace=robot_name,
+                # namespace=robot_name,
+                remappings=[
+                    ('robot_description', f'/{robot_name}_robot_description'),
+                    # (f'/{robot_name}/joint_states', f'/{robot_name}_joint_states')             
+                ],
                 output="both",
                 parameters=[{"use_sim_time": True}, robot_descriptions[robot_name]],
             ))
@@ -61,7 +65,7 @@ def launch_setup(context, *args, **kwargs):
                 package='ros_gz_sim',
                 executable='create',
                 output='screen',
-                namespace=f"{robot_name}",
+                # namespace=f"{robot_name}",
                 name=f"{robot_name}_spawner",
                 arguments=['-string', robot_urdf_docs[robot_name].toxml(),
                         '-name', f'aprs_{robot_name}',
@@ -74,7 +78,10 @@ def launch_setup(context, *args, **kwargs):
                 package="controller_manager",
                 executable="spawner",
                 name=f"{robot_name}_joint_state_broadcaster_spawner",
-                arguments=["joint_state_broadcaster","-c", f"/{robot_name}/controller_manager"],
+                arguments=[
+                    "joint_state_broadcaster",
+                    # "-c", f"/{robot_name}/controller_manager"
+                ],
                 parameters=[
                     {"use_sim_time": True},
                 ],
@@ -86,8 +93,10 @@ def launch_setup(context, *args, **kwargs):
                 package="controller_manager",
                 executable="spawner",
                 name=f"{robot_name}_controller_spawner",
-                arguments=["joint_trajectory_controller", 
-                    "-c", f"/{robot_name}/controller_manager"],
+                arguments=[
+                    "joint_trajectory_controller", 
+                    # "-c", f"/{robot_name}/controller_manager"
+                ],
                 parameters=[
                     {"use_sim_time": True},
                 ],
@@ -106,7 +115,7 @@ def launch_setup(context, *args, **kwargs):
             *robot_state_publishers,
             *gz_spawners,
             *joint_state_broadcasters,
-            *move_groups
+            # *move_groups
         ]
     else:
         robot_state_publisher_node = Node(
