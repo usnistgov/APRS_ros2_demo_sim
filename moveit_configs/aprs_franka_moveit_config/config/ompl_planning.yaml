@@ -62,7 +62,7 @@ planner_configs:
   PRMstarkConfigDefault:
     type: geometric::PRMstar
 
-aprs_franka:
+franka_arm:
   planner_configs:
     - SBLkConfigDefault
     - ESTkConfigDefault

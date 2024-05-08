@@ -62,7 +62,7 @@ planner_configs:
   PRMstarkConfigDefault:
     type: geometric::PRMstar
 
-aprs_fanuc:
+fanuc_arm:
   planner_configs:
     - SBLkConfigDefault
     - ESTkConfigDefault

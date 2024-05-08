@@ -63,10 +63,6 @@
       </ros>
       <parameters>$(arg controllers)</parameters>
       <load_params_directly>true</load_params_directly>
-      <controller name="ur_joint_trajectory_controller" params_file="$(find aprs_description)/config/robot_controllers.yaml"/>
-      <controller name="franka_joint_trajectory_controller" params_file="$(find aprs_description)/config/robot_controllers.yaml"/>
-      <controller name="fanuc_joint_trajectory_controller" params_file="$(find aprs_description)/config/robot_controllers.yaml"/>
-      <controller name="motoman_joint_trajectory_controller" params_file="$(find aprs_description)/config/robot_controllers.yaml"/>
     </plugin>
   </gazebo>
 

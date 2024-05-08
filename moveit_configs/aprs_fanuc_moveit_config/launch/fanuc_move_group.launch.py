@@ -11,7 +11,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def launch_setup(context, *args, **kwargs):
     
-    urdf = os.path.join(get_package_share_directory("aprs_description"), "urdf/aprs_lab_robots.urdf.xacro")
+    urdf = os.path.join(get_package_share_directory("aprs_description"), "urdf/aprs_fanuc.urdf.xacro")
 
     moveit_config = (
         MoveItConfigsBuilder("aprs_fanuc", package_name="aprs_fanuc_moveit_config")
@@ -26,8 +26,11 @@ def launch_setup(context, *args, **kwargs):
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
-        # namespace="fanuc",
+        namespace="fanuc",
         output="screen",
+        # remappings=[
+        #     ('/joint_states', '/fanuc/joint_states')             
+        # ],
         parameters=[
             moveit_config.to_dict(),
             {"use_sim_time": True}

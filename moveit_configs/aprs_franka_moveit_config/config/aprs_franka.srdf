@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_lab_robots">
-  <group name="aprs_franka">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_franka">
+  <group name="franka_arm">
     <chain base_link="world" tip_link="fr3_hand_tcp" />
 
     <passive_joint name="fr3_finger_joint1"/>

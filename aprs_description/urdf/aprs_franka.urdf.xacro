@@ -11,19 +11,17 @@
 
   <xacro:include filename="$(find aprs_description)/urdf/franka/aprs_franka_macro.xacro"/>
     <!-- ROS2 Control Plugin -->
-  <xacro:arg name="franka_controller" default="$(find aprs_description)/config/individual_controllers/franka_controller.yaml" />
+  <xacro:arg name="franka_controller" default="$(find aprs_description)/config/robot_controllers.yaml" />
   <!-- <xacro:arg name="controllers" default="$(find aprs_description)/config/ns_robot_controllers.yaml" /> -->
 
   <xacro:aprs_franka></xacro:aprs_franka>
 
   <gazebo>
     <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <!-- <ros>
+      <ros>
         <namespace>franka</namespace>
-      </ros> -->
+      </ros>
       <parameters>$(arg franka_controller)</parameters>
-      <load_params_directly>true</load_params_directly>
-      <controller name="joint_trajectory_controller" params_file="$(find aprs_description)/config/individual_controllers/franka_controller.yaml"/>
     </plugin>
   </gazebo>
 
