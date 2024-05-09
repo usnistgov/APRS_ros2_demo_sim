@@ -30,14 +30,15 @@ def launch_setup(context, *args, **kwargs):
         robot_description_content = doc.toprettyxml(indent='  ')
         
         # Robot state publisher
+        robot_state_publisher_params = {'use_sim_time': True,
+                                        'robot_description': robot_description_content}
         robot_state_publishers.append(Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             output='both',
             namespace=robot,
             parameters=[
-                {'use_sim_time': True}, 
-                {'robot_description': robot_description_content}
+                robot_state_publisher_params
             ],
         ))
         
@@ -53,29 +54,29 @@ def launch_setup(context, *args, **kwargs):
         
         # Joint state broadcaster
         joint_state_broadcasters.append(Node(
-            package="controller_manager",
-            executable="spawner",
-            name=f"{robot}_joint_state_broadcaster_spawner",
+            package='controller_manager',
+            executable='spawner',
+            name=f'{robot}_joint_state_broadcaster_spawner',
             arguments=[
-                "joint_state_broadcaster",
-                "-c", f"/{robot}/controller_manager"
+                'joint_state_broadcaster',
+                '-c', f'/{robot}/controller_manager'
             ],
             parameters=[
-                {"use_sim_time": True},
+                {'use_sim_time': True},
             ],
         ))
         
         #Joint trajectory controllers    
         joint_trajectory_controllers.append(Node(
-            package="controller_manager",
-            executable="spawner",
-            name=f"{robot}_controller_spawner",
+            package='controller_manager',
+            executable='spawner',
+            name=f'{robot}_controller_spawner',
             arguments=[
-                "joint_trajectory_controller", 
-                "-c", f"/{robot}/controller_manager"
+                'joint_trajectory_controller', 
+                '-c', f'/{robot}/controller_manager'
             ],
             parameters=[
-                {"use_sim_time": True},
+                {'use_sim_time': True},
             ],
         ))
 

@@ -19,11 +19,11 @@ planning_scene_monitor_parameters:
   publish_robot_description_semantic: true
   
 # Default
-franka_arm:
-  plan_request_params:
-    planning_attempts: 1
-    planning_pipeline: ompl
-    planner_id: RRTConnectkConfigDefault
-    max_velocity_scaling_factor: 1.0
-    max_acceleration_scaling_factor: 1.0
-    planning_time: 1.0
+# franka_arm:
+plan_request_params:
+  planning_attempts: 1
+  planning_pipeline: ompl
+  planner_id: RRTConnectkConfigDefault
+  max_velocity_scaling_factor: 1.0
+  max_acceleration_scaling_factor: 1.0
+  planning_time: 1.0

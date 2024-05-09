@@ -7,6 +7,26 @@
     <passive_joint name="fr3_finger_joint2"/>
     
   </group>
+
+  <group_state name="home" group="franka_arm">
+    <joint name="fr3_joint1" value="0" />
+    <joint name="fr3_joint2" value="0" />
+    <joint name="fr3_joint3" value="0" />
+    <joint name="fr3_joint4" value="-1.5707" />
+    <joint name="fr3_joint5" value="0" />
+    <joint name="fr3_joint6" value="0" />
+    <joint name="fr3_joint7" value="0" />
+  </group_state>
+
+  <group_state name="test_state" group="franka_arm">
+    <joint name="fr3_joint1" value="0" />
+    <joint name="fr3_joint2" value="0" />
+    <joint name="fr3_joint3" value="0.0" />
+    <joint name="fr3_joint4" value="-1.5707" />
+    <joint name="fr3_joint5" value="0" />
+    <joint name="fr3_joint6" value="1.5707" />
+    <joint name="fr3_joint7" value="0" />
+  </group_state>
     
     <disable_collisions link1="fr3_leftfinger" link2="fr3_rightfinger" reason="Adjacent" />
 </robot>
