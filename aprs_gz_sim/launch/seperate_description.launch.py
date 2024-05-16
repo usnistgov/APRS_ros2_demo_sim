@@ -55,7 +55,7 @@ def launch_setup(context, *args, **kwargs):
             arguments=[
                     '-topic', f'{robot}/robot_description',        
                     '-name', f'aprs_{robot}',
-                    '-allow_renaming', 'true'],
+                    '-allow_renaming', 'true']
         ))
         
         # Joint state broadcaster

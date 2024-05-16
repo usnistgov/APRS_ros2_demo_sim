@@ -18,6 +18,8 @@ planning_scene_monitor_parameters:
 planning_pipelines:
   pipeline_names: ["ompl"]
 
+use_sim_time: true
+
 # Default
 fanuc_arm:
   plan_request_params:
