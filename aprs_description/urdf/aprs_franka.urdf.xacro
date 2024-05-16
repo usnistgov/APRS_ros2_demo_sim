@@ -18,10 +18,10 @@
 
   <gazebo>
     <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <ros>
-        <namespace>franka</namespace>
-      </ros>
       <parameters>$(arg franka_controller)</parameters>
+      <controller_manager_name>franka_controller_manager</controller_manager_name>
+      <robot_param>robot_description</robot_param>
+      <robot_param_node>franka/robot_state_publisher</robot_param_node>
     </plugin>
   </gazebo>
 

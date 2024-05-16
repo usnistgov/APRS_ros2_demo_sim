@@ -22,7 +22,8 @@ def launch_setup(context, *args, **kwargs):
     robot_spawners = []
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
-    for robot in ['fanuc', 'franka', 'motoman', 'ur']:
+    # for robot in ['fanuc', 'franka', 'motoman', 'ur']:
+    for robot in ["fanuc","franka"]:
         urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{robot}.urdf.xacro')
         
         doc = xacro.process_file(urdf)
@@ -37,6 +38,9 @@ def launch_setup(context, *args, **kwargs):
             executable='robot_state_publisher',
             output='both',
             namespace=robot,
+            remappings=[
+                ("joint_states", "/joint_states")
+            ],
             parameters=[
                 robot_state_publisher_params
             ],
@@ -47,7 +51,9 @@ def launch_setup(context, *args, **kwargs):
             package='ros_gz_sim',
             executable='create',
             output='screen',
-            arguments=['-topic', f'{robot}/robot_description',
+            # name=f'{robot}_ros_gz_sim',
+            arguments=[
+                    '-topic', f'{robot}/robot_description',        
                     '-name', f'aprs_{robot}',
                     '-allow_renaming', 'true'],
         ))
@@ -58,8 +64,8 @@ def launch_setup(context, *args, **kwargs):
             executable='spawner',
             name=f'{robot}_joint_state_broadcaster_spawner',
             arguments=[
-                'joint_state_broadcaster',
-                '-c', f'/{robot}/controller_manager'
+                f'{robot}_joint_state_broadcaster',
+                '-c', f'{robot}_controller_manager'
             ],
             parameters=[
                 {'use_sim_time': True},
@@ -72,8 +78,8 @@ def launch_setup(context, *args, **kwargs):
             executable='spawner',
             name=f'{robot}_controller_spawner',
             arguments=[
-                'joint_trajectory_controller', 
-                '-c', f'/{robot}/controller_manager'
+                f'{robot}_joint_trajectory_controller', 
+                '-c', f'{robot}_controller_manager'
             ],
             parameters=[
                 {'use_sim_time': True},
