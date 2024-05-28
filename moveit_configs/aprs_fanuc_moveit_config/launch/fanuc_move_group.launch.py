@@ -16,7 +16,7 @@ def launch_setup(context, *args, **kwargs):
     moveit_config = (
         MoveItConfigsBuilder("aprs_fanuc", package_name="aprs_fanuc_moveit_config")
         .robot_description(urdf)
-        .robot_description_semantic(file_path="config/aprs_lab_robots.srdf")
+        .robot_description_semantic(file_path="config/aprs_fanuc.srdf")
         .trajectory_execution(file_path="config/controllers.yaml")
         .planning_pipelines(pipelines=["ompl"])
         .to_moveit_configs()
@@ -26,7 +26,7 @@ def launch_setup(context, *args, **kwargs):
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
-        namespace="fanuc",
+        # namespace="fanuc",
         output="screen",
         # remappings=[
         #     ('/joint_states', '/fanuc/joint_states')             

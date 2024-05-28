@@ -16,7 +16,7 @@ def launch_setup(context, *args, **kwargs):
     moveit_config = (
         MoveItConfigsBuilder("aprs_franka", package_name="aprs_franka_moveit_config")
         .robot_description(urdf)
-        .robot_description_semantic(file_path="config/aprs_lab_robots.srdf")
+        .robot_description_semantic(file_path="config/aprs_franka.srdf")
         .trajectory_execution(file_path="config/controllers.yaml")
         .planning_pipelines(pipelines=["ompl"])
         .to_moveit_configs()
