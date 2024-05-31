@@ -27,7 +27,7 @@
       </ros> -->
       <parameters>$(arg motoman_controller)</parameters>
       <controller_manager_name>motoman_controller_manager</controller_manager_name>
-      <robot_param>/motoman/robot_description</robot_param>
+      <robot_param>robot_description</robot_param>
       <robot_param_node>/motoman/robot_state_publisher</robot_param_node>
     </plugin>
   </gazebo>

@@ -27,7 +27,7 @@
       </ros> -->
       <parameters>$(arg ur_controller)</parameters>
       <controller_manager_name>ur_controller_manager</controller_manager_name>
-      <robot_param>/ur/robot_description</robot_param>
+      <robot_param>robot_description</robot_param>
       <robot_param_node>/ur/robot_state_publisher</robot_param_node>
     </plugin>
   </gazebo>

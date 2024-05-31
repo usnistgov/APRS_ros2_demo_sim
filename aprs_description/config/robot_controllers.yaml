@@ -1,6 +1,6 @@
-# ==========================
-# Combined Robot Description
-# ==========================
+# # ==========================
+# # Combined Robot Description
+# # ==========================
 
 # controller_manager:
 #   ros__parameters:
@@ -118,7 +118,7 @@
 # ==========================
 
 
-controller_manager:
+fanuc_controller_manager:
   ros__parameters:
     update_rate: 1000 # Hz
 
@@ -127,29 +127,10 @@ controller_manager:
 
     fanuc_joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
-    
-    franka_joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-
-    franka_joint_trajectory_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
-    
-    motoman_joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-
-    motoman_joint_trajectory_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
-    
-    ur_joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-
-    ur_joint_trajectory_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
   
 fanuc_joint_trajectory_controller:
   ros__parameters:
-    joints:      <controller_manager_name>franka_controller_manager</controller_manager_name>
-
+    joints:
       - joint_1
       - joint_2
       - joint_3      
@@ -174,6 +155,16 @@ fanuc_joint_trajectory_controller:
       joint_5: { trajectory: 0.5, goal: 0.1 }
       joint_6: { trajectory: 0.5, goal: 0.1 }
 
+franka_controller_manager:
+  ros__parameters:
+    update_rate: 1000 # Hz
+  
+    franka_joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    franka_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
 franka_joint_trajectory_controller:
   ros__parameters:
     joints:
@@ -193,6 +184,16 @@ franka_joint_trajectory_controller:
     action_monitor_rate: 20.0
     allow_partial_joints_goal: false
 
+motoman_controller_manager:
+  ros__parameters:
+    update_rate: 1000 # Hz
+  
+    motoman_joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    motoman_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
 motoman_joint_trajectory_controller:
   ros__parameters:
     joints:
@@ -211,6 +212,16 @@ motoman_joint_trajectory_controller:
     state_publish_rate: 1000.0
     action_monitor_rate: 20.0
     allow_partial_joints_goal: false
+
+ur_controller_manager:
+  ros__parameters:
+    update_rate: 1000 # Hz
+  
+    ur_joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    ur_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
 
 ur_joint_trajectory_controller:
   ros__parameters:
