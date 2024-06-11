@@ -22,10 +22,13 @@
 
   <gazebo>
     <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <ros>
+        <namespace>fanuc</namespace>
+      </ros>
       <parameters>$(arg fanuc_controller)</parameters>
-      <controller_manager_name>fanuc_controller_manager</controller_manager_name>
+      <!-- <controller_manager_name>fanuc_controller_manager</controller_manager_name> -->
       <robot_param>robot_description</robot_param>
-      <robot_param_node>/fanuc/robot_state_publisher</robot_param_node>
+      <!-- <robot_param_node>/fanuc/robot_state_publisher</robot_param_node> -->
     </plugin>
   </gazebo>
 

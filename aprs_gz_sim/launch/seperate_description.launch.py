@@ -22,8 +22,8 @@ def launch_setup(context, *args, **kwargs):
     robot_spawners = []
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
-    for robot in ['fanuc', 'franka']:
-    # for robot in ["franka"]:
+    # for robot in ['fanuc', 'franka']:
+    for robot in ["fanuc"]:
         urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{robot}.urdf.xacro')
         
         doc = xacro.process_file(urdf)
@@ -38,9 +38,9 @@ def launch_setup(context, *args, **kwargs):
             executable='robot_state_publisher',
             output='both',
             namespace=robot,
-            remappings=[
-                ("joint_states", "/joint_states")
-            ],
+            # remappings=[
+            #     ("joint_states", "/joint_states")
+            # ],
             parameters=[
                 robot_state_publisher_params
             ],
@@ -62,10 +62,10 @@ def launch_setup(context, *args, **kwargs):
         joint_state_broadcasters.append(Node(
             package='controller_manager',
             executable='spawner',
-            name=f'{robot}_joint_state_broadcaster_spawner',
+            name='joint_state_broadcaster_spawner',
+            namespace=robot,
             arguments=[
-                f'{robot}_joint_state_broadcaster',
-                '-c', f'{robot}_controller_manager'
+                'joint_state_broadcaster'
             ],
             parameters=[
                 {'use_sim_time': True},
@@ -76,10 +76,10 @@ def launch_setup(context, *args, **kwargs):
         joint_trajectory_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
-            name=f'{robot}_controller_spawner',
+            name='controller_spawner',
+            namespace=robot,
             arguments=[
-                f'{robot}_joint_trajectory_controller', 
-                '-c', f'{robot}_controller_manager'
+                'joint_trajectory_controller'
             ],
             parameters=[
                 {'use_sim_time': True},
