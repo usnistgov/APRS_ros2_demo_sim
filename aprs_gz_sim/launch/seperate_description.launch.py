@@ -22,8 +22,8 @@ def launch_setup(context, *args, **kwargs):
     robot_spawners = []
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
-    for robot in ['fanuc', 'franka']:
-    # for robot in ["franka"]:
+    # for robot in ['fanuc', 'franka']:
+    for robot in ["motoman"]:
         urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{robot}.urdf.xacro')
         
         doc = xacro.process_file(urdf)
