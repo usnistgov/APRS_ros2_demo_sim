@@ -2,7 +2,7 @@
 
 #include <gflags/gflags.h>
 
-// #include <gz/msgs/boolean.pb.h>
+#include <gz/msgs/boolean.pb.h>
 #include <gz/msgs/entity.pb.h>
 #include <gz/msgs/entity_factory.pb.h>
 #include <gz/msgs/stringmsg_v.pb.h>
@@ -16,7 +16,6 @@
 #include <gz/transport/Node.hh>
 
 #include <rclcpp/rclcpp.hpp>
-#include <std_msgs/msg/string.hpp>
 
 class SpawnPart : public rclcpp::Node
 {

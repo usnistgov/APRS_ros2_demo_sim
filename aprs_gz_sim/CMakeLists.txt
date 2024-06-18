@@ -11,10 +11,16 @@ endif()
 
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclpy
+  rclcpp
+  aprs_interfaces
+  ros_gz_interfaces
 )
 
-find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_python REQUIRED)
+find_package(gz-transport13 REQUIRED)
+
+find_package(gz-msgs10 REQUIRED)
+
+# set(GZ_TARGET_PREFIX gz)
 
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
@@ -34,14 +40,17 @@ install(DIRECTORY
 
 ament_python_install_package(${PROJECT_NAME} SCRIPTS_DESTINATION lib/${PROJECT_NAME})
 
-add_executable(spawn_part_node nodes/spawn_part_node.cpp)
-target_include_directories(spawn_part_node PRIVATE include)
-target_link_libraries(spawn_part_node
-  ${PROJECT_NAME}
-)
-ament_target_dependencies(spawn_part_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+add_executable(spawn_part src/spawn_part.cpp)
+target_include_directories(spawn_part PRIVATE include)
 
-install(TARGETS spawn_part_node
+target_link_libraries(spawn_part
+  gz-msgs10::core
+  gz-transport13::core
+)
+
+ament_target_dependencies(spawn_part ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+install(TARGETS spawn_part
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
