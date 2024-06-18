@@ -25,7 +25,7 @@ def launch_setup(context, *args, **kwargs):
     gz = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [os.path.join(get_package_share_directory('ros_gz_sim'),'launch', 'gz_sim.launch.py')]),
-            launch_arguments=[('gz_args', [' -r -v 4 '+ world_path])
+            launch_arguments=[('gz_args', [' -r -v4 '+ world_path])
         ]
     )
 

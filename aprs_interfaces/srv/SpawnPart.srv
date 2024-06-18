@@ -1,0 +1,5 @@
+string type
+string color
+geometry_msgs/Pose pose
+---
+bool success

@@ -20,15 +20,30 @@ foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
 
+install(DIRECTORY include/
+  DESTINATION include
+)
 
 install(DIRECTORY
   launch
+  models
   gz_models
   worlds
   DESTINATION share/${PROJECT_NAME}
 )
 
 ament_python_install_package(${PROJECT_NAME} SCRIPTS_DESTINATION lib/${PROJECT_NAME})
+
+add_executable(spawn_part_node nodes/spawn_part_node.cpp)
+target_include_directories(spawn_part_node PRIVATE include)
+target_link_libraries(spawn_part_node
+  ${PROJECT_NAME}
+)
+ament_target_dependencies(spawn_part_node ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
+install(TARGETS spawn_part_node
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
 
 install(PROGRAMS
   nodes/environment_startup_node.py

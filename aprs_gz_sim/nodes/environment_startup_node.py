@@ -10,11 +10,11 @@ def main():
 
     startup_node = EnvironmentStartup()
 
-    print("Stuff loaded")
-
     sleep(5)
 
     startup_node.spawn_parts_for_motoman()
+    
+    startup_node.environment_ready()
 
     try:
         rclpy.spin(startup_node)
