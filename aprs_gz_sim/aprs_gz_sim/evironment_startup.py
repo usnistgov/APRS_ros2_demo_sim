@@ -200,7 +200,7 @@ class EnvironmentStartup(Node):
         xml = ET.fromstring(self.get_sdf(f"/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/{p_type}/model.sdf"))
         
         r, g, b = self.colors[p_color]
-        color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
+        color_string = str(randint(0,255)/255) + " " + str(randint(0,255)/255) + " " + str(randint(0,255)/255) + " 1" 
 
         for elem in xml.find('model').find('link').findall('visual'):
             if elem.attrib['name'] == "base":
@@ -232,17 +232,16 @@ class EnvironmentStartup(Node):
             future = self.spawn_part_client.call_async(request)
             
             sleep(10)
-            # while not future.done():
-            #     sleep(0.1)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=5)
 
-            # if not future.done():
-            #     raise Error("Timeout reached when calling spawn_part service")
+            if not future.done():
+                raise Error("Timeout reached when calling spawn_part service")
 
-            # result: SpawnPart.Response
-            # result = future.result()
+            result: SpawnPart.Response
+            result = future.result()
 
-            # if not result.success:
-            #     self.get_logger().error("Error calling spawn_part service")
+            if not result.success:
+                self.get_logger().error("Error calling spawn_part service")
     
     def publish_environment_status(self):
         msg = BoolMsg()
