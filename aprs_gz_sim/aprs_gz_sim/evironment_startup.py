@@ -14,7 +14,7 @@ from aprs_gz_sim.utils import pose_info, convert_pi_string_to_float, euler_from_
 from aprs_gz_sim.spawn_params import SpawnParams, PartSpawnParams
 
 import math
-from os import system
+import os
 from time import sleep
 from random import randint
 
@@ -31,28 +31,9 @@ from geometry_msgs.msg import (
 
 from aprs_interfaces.srv import SpawnPart
 
-# from ariac_msgs.msg import (
-#     AssemblyPart,
-#     AssemblyTask,
-#     BinInfo,
-#     BinParts,
-#     Challenge,
-#     CombinedTask,
-#     Condition,
-#     ConveyorParts,
-#     ConveyorBeltState,
-#     DroppedPartChallenge,
-#     FaultyPartChallenge,
-#     KittingPart,
-#     KittingTask,
-#     OrderCondition,
-#     Order,
-#     Part,
-#     PartLot,
-#     RobotMalfunctionChallenge,
-#     SensorBlackoutChallenge,
-#     Trial,
-# )
+from ament_index_python.packages import get_package_share_directory
+
+
 
 class bcolors:
     HEADER = "\033[95m"
@@ -117,76 +98,66 @@ class EnvironmentStartup(Node):
         
         self.spawn_part_client = self.create_client(SpawnPart, "/spawn_part")
 
-    def spawn_entity(self, params: SpawnParams, wait=True) -> bool:
-        self.get_logger().info("Before wait")
-        self.get_logger().info(f'Spawning: {params.name}\n\n\n\n')
+    def get_sensor_xml(self, file_path, sensor_type, name = "camera_1"):
+        xml = ET.fromstring(self.get_sdf(file_path))
         
-        service_found = self.spawn_client.wait_for_service(timeout_sec=10)
+        xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
         
-        if not service_found:
-            self.get_logger().error("/spawn_entity service not found")
-            system("ros2 service list | grep /spawn_entity")
-            return False
+        ray_sensors = ["break_beam", "proximity", "laser_profiler", "lidar"]
+        if sensor_type in ray_sensors:
+            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+
+            # plugin.set('name', str(name + "_ros_plugin"))
+            plugin.find('sensor_name').text = name
+            plugin.find('frame_name').text = name + "_frame"
         
-        self.get_logger().info("/spawn_entity service found")
+        cameras = ['rgb_camera', 'rgbd_camera', 'basic_logical_camera', 'advanced_logical_camera']
+        if sensor_type in cameras:
+            plugin = xml.find('model').find('link').find('sensor').find('plugin')
 
+            # plugin.set('name', str(name + "_ros_plugin"))
+            plugin.find('camera_name').text = name
+            plugin.find('frame_name').text = name + "_frame"
+
+        return ET.tostring(xml, encoding="unicode")
+    
+    def spawn_sensors(self):
+        sensor_type = "advanced_logical_camera"
+        xyz = [0, 0, 3]
+        orientation = [0, 0, 0, 0]
+        name = "advanced_logical_camera_1"
         
-
-        req = SpawnEntity.Request()
-
-        req.entity_factory.name = params.name
-        req.entity_factory.pose = params.initial_pose
-        req.entity_factory.sdf = params.xml
-        req.entity_factory.sdf_filename = params.file_path
-        req.entity_factory.relative_to = params.reference_frame
-
-        future = self.spawn_client.call_async(req)
-
-        if wait:
-            rclpy.spin_until_future_complete(self, future)
-            return future.result().success
-        else:
-            return True
+        new_sensor_pose = Pose()
+        new_sensor_pose.position.x = float(xyz[0])
+        new_sensor_pose.position.y = float(xyz[1])
+        new_sensor_pose.position.z = float(xyz[2])
+        new_sensor_pose.orientation.x = float(orientation[0])
+        new_sensor_pose.orientation.y = float(orientation[1])
+        new_sensor_pose.orientation.z = float(orientation[2])
+        new_sensor_pose.orientation.w = float(orientation[3])
         
-    def parse_part_info(self, part_info):
-        part = PartInfo()
+        request = SpawnPart.Request()
+        request.type = "advanced_logical_camera"
+        request.color = "first"
+        request.pose = new_sensor_pose
+        
+        file_path = os.path.join(get_package_share_directory("ariac_gz_plugins"), "models", sensor_type, "model.sdf")
+        
+        request.xml = self.get_sensor_xml(file_path, sensor_type, name)
+        
+        future = self.spawn_part_client.call_async(request)
+            
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5)
 
-        try:
-            part.type = part_info['type']
-            part.height = PartInfo.part_heights[part.type]
-        except KeyError:
-            self.get_logger().warn(bcolors.WARNING + "Part type is not specified" + bcolors.ENDC)
-            return (False, part)
+        if not future.done():
+            raise Error("Timeout reached when calling spawn_part service")
 
-        try:
-            part.color = part_info['color']
-        except KeyError:
-            self.get_logger().warn(bcolors.WARNING + "Part color is not specified" + bcolors.ENDC)
-            return (False, part)
+        result: SpawnPart.Response
+        result = future.result()
 
-        try:
-            part.rotation = str(part_info['rotation'])
-        except KeyError:
-            pass
-
-        try:
-            part.flipped = part_info['flipped']
-            if not type(part.flipped) == bool:
-                self.get_logger().warn(bcolors.WARNING + "flipped parameter should be either true or false" + bcolors.ENDC)
-                part.flipped = False
-        except KeyError:
-            pass
-
-        if not part.type in PartSpawnParams.part_types:
-            self.get_logger().warn(bcolors.WARNING + f"{part_info['type']} is not a valid part type" + bcolors.ENDC)
-            return (False, part)
-
-        if not part.color in PartSpawnParams.colors:
-            self.get_logger().warn(bcolors.WARNING + f"{part_info['color']} is not a valid part color" + bcolors.ENDC)
-            return (False, part)
-
-        return (True, part)
-
+        if not result.success:
+            self.get_logger().error("Error calling spawn_part service")
+    
     def get_sdf(self, file_path: str) -> str:
         try:
             f = open(file_path, 'r')
@@ -196,8 +167,8 @@ class EnvironmentStartup(Node):
         
         return entity_xml
     
-    def get_xml(self, p_type, p_color):
-        xml = ET.fromstring(self.get_sdf(f"/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/{p_type}/model.sdf"))
+    def get_part_xml(self, p_type, p_color):
+        xml = ET.fromstring(os.path.join(get_package_share_directory("aprs_gz_sim"), "models", p_type, "model.sdf"))
         
         r, g, b = self.colors[p_color]
         color_string = str(randint(0,255)/255) + " " + str(randint(0,255)/255) + " " + str(randint(0,255)/255) + " 1" 
@@ -210,38 +181,38 @@ class EnvironmentStartup(Node):
         return ET.tostring(xml, encoding="unicode")
     
     def spawn_parts_for_motoman(self):
-        while True:
-            request = SpawnPart.Request()
-            
-            request.type = ["battery", "pump", "regulator", "sensor"][randint(0,3)]
-            request.color = ["blue", "green", "red", "purple", "orange"][randint(0,4)]
-            
-            new_part_pose = Pose()
-            new_part_pose.position.x = 0.0
-            new_part_pose.position.y = 0.0
-            new_part_pose.position.z = 3.0
-            new_part_pose.orientation.x = 0.0
-            new_part_pose.orientation.y = 0.0
-            new_part_pose.orientation.z = 0.0
-            new_part_pose.orientation.w = 0.0
-            
-            request.pose = new_part_pose
-            
-            request.xml = self.get_xml(request.type, request.color)
-            
-            future = self.spawn_part_client.call_async(request)
-            
-            sleep(10)
-            rclpy.spin_until_future_complete(self, future, timeout_sec=5)
+        # while True:
+        request = SpawnPart.Request()
+        
+        request.type = ["battery", "pump", "regulator", "sensor"][randint(0,3)]
+        request.color = ["blue", "green", "red", "purple", "orange"][randint(0,4)]
+        
+        new_part_pose = Pose()
+        new_part_pose.position.x = 0.0
+        new_part_pose.position.y = 0.0
+        new_part_pose.position.z = 3.0
+        new_part_pose.orientation.x = 0.0
+        new_part_pose.orientation.y = 0.0
+        new_part_pose.orientation.z = 0.0
+        new_part_pose.orientation.w = 0.0
+        
+        request.pose = new_part_pose
+        
+        request.xml = self.get_part_xml(request.type, request.color)
+        
+        future = self.spawn_part_client.call_async(request)
+        
+        sleep(10)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5)
 
-            if not future.done():
-                raise Error("Timeout reached when calling spawn_part service")
+        if not future.done():
+            raise Error("Timeout reached when calling spawn_part service")
 
-            result: SpawnPart.Response
-            result = future.result()
+        result: SpawnPart.Response
+        result = future.result()
 
-            if not result.success:
-                self.get_logger().error("Error calling spawn_part service")
+        if not result.success:
+            self.get_logger().error("Error calling spawn_part service")
     
     def publish_environment_status(self):
         msg = BoolMsg()
