@@ -4,7 +4,7 @@ SpawnPart::SpawnPart()
     : Node("part_spawner") 
 {
     spawn_part_srv_ = this->create_service<aprs_interfaces::srv::SpawnPart>(
-        "spawn_part",
+        "/spawn_part",
         std::bind(&SpawnPart::spawn_part_cb_, this, std::placeholders::_1, std::placeholders::_2)
     );
 }
@@ -19,12 +19,18 @@ void SpawnPart::spawn_part_cb_(
     // Request message
     gz::msgs::EntityFactory req;
 
+    req.set_name(request->color + "_" + request->type + "_" + std::to_string(part_count));
+    part_count++;
+
     // File
-    std::string sdf_filepath = "/home/ubuntu/aprs_ws/install/aprs_gz_sim/models/" + request->type + "/model.sdf";
+    std::string sdf_filepath = "/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/" + request->type + "/model.sdf";
     req.set_sdf_filename(sdf_filepath);
     std::ifstream t(sdf_filepath);
     std::stringstream buffer;
     buffer << t.rdbuf();
+    RCLCPP_INFO_STREAM(this->get_logger(), sdf_filepath);
+    RCLCPP_INFO(this->get_logger(), "XML:\n");
+    RCLCPP_INFO_STREAM(this->get_logger(), buffer.str());
     req.set_sdf(buffer.str());
 
     // Pose
@@ -53,8 +59,10 @@ void SpawnPart::spawn_part_cb_(
         RCLCPP_ERROR(
         this->get_logger(), "Request to create entity from service [%s] timed out..\n %s",
         service.c_str(), req.DebugString().c_str());
+        response->set__success(false);
     }
     RCLCPP_INFO(this->get_logger(), "OK creation of entity.");
+    response->set__success(true);
 }
 
 std::vector<float> SpawnPart::get_rpy_from_quaternion(float x, float y, float z, float w){

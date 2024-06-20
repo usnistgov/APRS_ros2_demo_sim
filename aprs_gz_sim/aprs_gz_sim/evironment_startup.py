@@ -15,6 +15,7 @@ from aprs_gz_sim.spawn_params import SpawnParams, PartSpawnParams
 
 import math
 from os import system
+from time import sleep
 
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
@@ -24,6 +25,8 @@ from geometry_msgs.msg import (
     PoseStamped,
     Vector3
 )
+
+from aprs_interfaces.srv import SpawnPart
 
 # from ariac_msgs.msg import (
 #     AssemblyPart,
@@ -73,6 +76,13 @@ class PartInfo:
         self.rotation = '0'
         self.flipped = False
         self.height = None
+        
+class Error(Exception):
+  def __init__(self, value: str):
+      self.value = value
+
+  def __str__(self):
+      return repr(self.value)
 
 class EnvironmentStartup(Node):
     def __init__(self):
@@ -93,6 +103,8 @@ class EnvironmentStartup(Node):
         # Setup TF listener
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
+        
+        self.spawn_part_client = self.create_client(SpawnPart, "/spawn_part")
 
     def spawn_entity(self, params: SpawnParams, wait=True) -> bool:
         self.get_logger().info("Before wait")
@@ -165,39 +177,40 @@ class EnvironmentStartup(Node):
         return (True, part)
 
     def spawn_parts_for_motoman(self):
-        _, part = self.parse_part_info({'type': 'battery', 'color': 'blue'})
+        while True:
+            print("TEST")
+            request = SpawnPart.Request()
+            
+            request.type = ["battery", "pump", "regulator", "sensor"][__import__("random").randint(0,3)]
+            request.color = "blue"
+            
+            new_part_pose = Pose()
+            new_part_pose.position.x = 0.0
+            new_part_pose.position.y = 0.0
+            new_part_pose.position.z = 3.0
+            new_part_pose.orientation.x = 0.0
+            new_part_pose.orientation.y = 0.0
+            new_part_pose.orientation.z = 0.0
+            new_part_pose.orientation.w = 0.0
+            
+            request.pose = new_part_pose
+            
+            future = self.spawn_part_client.call_async(request)
+            
+            sleep(1)
+            # while not future.done():
+            #     sleep(0.1)
+            #     print("IN LOOP")
+            #     pass
 
-        part_name = part.type + "_" + part.color + "_b" + str(self.part_count).zfill(2)
-        self.part_count += 1
+            # if not future.done():
+            #     raise Error("Timeout reached when calling spawn_part service")
 
-        if part.flipped:
-            roll = math.pi
-        else:
-            roll = 0
+            # result: SpawnPart.Response
+            # result = future.result()
 
-        yaw = convert_pi_string_to_float(part.rotation)
-
-        q = quaternion_from_euler(roll, 0, yaw)
-        rel_pose = Pose()
-        rel_pose.position.x = 0.0
-        rel_pose.position.y = 0.0
-
-        if part.flipped:
-            rel_pose.position.z = part.height
-
-        rel_pose.orientation.w = q[0]
-        rel_pose.orientation.x = q[1]
-        rel_pose.orientation.y = q[2]
-        rel_pose.orientation.z = q[3]
-        
-        world_pose = do_transform_pose(rel_pose, self.tf_buffer.lookup_transform("world", "world", rclpy.time.Time()))
-
-        xyz = [world_pose.position.x, world_pose.position.y, world_pose.position.z]
-        rpy = euler_from_quaternion(world_pose.orientation)
-
-        params = PartSpawnParams(part_name, part.type, part.color, xyz=xyz, rpy=rpy)
-
-        self.spawn_entity(params, wait=True)
+            # if not result.success:
+            #     self.get_logger().error("Error calling spawn_part service")
     
     def publish_environment_status(self):
         msg = BoolMsg()
