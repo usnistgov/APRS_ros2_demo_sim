@@ -28,6 +28,11 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments=[('gz_args', [' -r -v4 '+ world_path])
         ]
     )
+    
+    spawn_part_node = Node(
+        package='aprs_gz_sim',
+        executable='spawn_part'
+    )
 
     combined_robots = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -46,7 +51,8 @@ def launch_setup(context, *args, **kwargs):
     return [
         gz,
         combined_robots,
-        seperate_robots
+        seperate_robots,
+        spawn_part_node
         ]
     
 def generate_launch_description():
