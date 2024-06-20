@@ -16,6 +16,9 @@ from aprs_gz_sim.spawn_params import SpawnParams, PartSpawnParams
 import math
 from os import system
 from time import sleep
+from random import randint
+
+import xml.etree.ElementTree as ET
 
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
@@ -85,6 +88,14 @@ class Error(Exception):
       return repr(self.value)
 
 class EnvironmentStartup(Node):
+    colors = {
+        'blue': (0, 0, 168),
+        'green': (0, 100, 0),
+        'red': (139, 0, 0),
+        'purple': (138, 0, 226),
+        'orange': (255, 140, 0)   
+    }
+    
     def __init__(self):
         super().__init__("environment_startup_node")
 
@@ -176,13 +187,34 @@ class EnvironmentStartup(Node):
 
         return (True, part)
 
+    def get_sdf(self, file_path: str) -> str:
+        try:
+            f = open(file_path, 'r')
+            entity_xml = f.read()
+        except IOError:
+            return ''
+        
+        return entity_xml
+    
+    def get_xml(self, p_type, p_color):
+        xml = ET.fromstring(self.get_sdf(f"/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/{p_type}/model.sdf"))
+        
+        r, g, b = self.colors[p_color]
+        color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
+
+        for elem in xml.find('model').find('link').findall('visual'):
+            if elem.attrib['name'] == "base":
+                elem.find("material").find("ambient").text = color_string
+                elem.find("material").find("diffuse").text = color_string
+
+        return ET.tostring(xml, encoding="unicode")
+    
     def spawn_parts_for_motoman(self):
         while True:
-            print("TEST")
             request = SpawnPart.Request()
             
-            request.type = ["battery", "pump", "regulator", "sensor"][__import__("random").randint(0,3)]
-            request.color = "blue"
+            request.type = ["battery", "pump", "regulator", "sensor"][randint(0,3)]
+            request.color = ["blue", "green", "red", "purple", "orange"][randint(0,4)]
             
             new_part_pose = Pose()
             new_part_pose.position.x = 0.0
@@ -195,13 +227,13 @@ class EnvironmentStartup(Node):
             
             request.pose = new_part_pose
             
+            request.xml = self.get_xml(request.type, request.color)
+            
             future = self.spawn_part_client.call_async(request)
             
-            sleep(1)
+            sleep(10)
             # while not future.done():
             #     sleep(0.1)
-            #     print("IN LOOP")
-            #     pass
 
             # if not future.done():
             #     raise Error("Timeout reached when calling spawn_part service")

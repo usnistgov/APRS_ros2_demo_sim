@@ -23,15 +23,8 @@ void SpawnPart::spawn_part_cb_(
     part_count++;
 
     // File
-    std::string sdf_filepath = "/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/" + request->type + "/model.sdf";
-    req.set_sdf_filename(sdf_filepath);
-    std::ifstream t(sdf_filepath);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-    RCLCPP_INFO_STREAM(this->get_logger(), sdf_filepath);
-    RCLCPP_INFO(this->get_logger(), "XML:\n");
-    RCLCPP_INFO_STREAM(this->get_logger(), buffer.str());
-    req.set_sdf(buffer.str());
+    RCLCPP_INFO_STREAM(this->get_logger(), request->xml);
+    req.set_sdf(request->xml);
 
     // Pose
     std::vector rpy = get_rpy_from_quaternion(request->pose.orientation.x, request->pose.orientation.y,
@@ -60,6 +53,7 @@ void SpawnPart::spawn_part_cb_(
         this->get_logger(), "Request to create entity from service [%s] timed out..\n %s",
         service.c_str(), req.DebugString().c_str());
         response->set__success(false);
+        return;
     }
     RCLCPP_INFO(this->get_logger(), "OK creation of entity.");
     response->set__success(true);
