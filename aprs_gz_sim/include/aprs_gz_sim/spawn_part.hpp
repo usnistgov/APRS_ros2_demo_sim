@@ -1,4 +1,5 @@
 #include <aprs_interfaces/srv/spawn_part.hpp>
+#include <aprs_interfaces/srv/spawn_sensor.hpp>
 
 #include <gflags/gflags.h>
 
@@ -25,13 +26,17 @@ class SpawnPart : public rclcpp::Node
 
     private:
         rclcpp::Service<aprs_interfaces::srv::SpawnPart>::SharedPtr spawn_part_srv_;
+        rclcpp::Service<aprs_interfaces::srv::SpawnSensor>::SharedPtr spawn_sensor_srv_;
 
         gz::transport::Node gz_node;
 
         int part_count = 0;
+        int sensor_count = 0;
 
         void spawn_part_cb_(const std::shared_ptr<aprs_interfaces::srv::SpawnPart::Request> request,
                             std::shared_ptr<aprs_interfaces::srv::SpawnPart::Response> response);
+        void spawn_sensor_cb_(const std::shared_ptr<aprs_interfaces::srv::SpawnSensor::Request> request,
+                            std::shared_ptr<aprs_interfaces::srv::SpawnSensor::Response> response);
         
         std::vector<float> get_rpy_from_quaternion(float, float, float, float);
 };

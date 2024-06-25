@@ -7,6 +7,11 @@ SpawnPart::SpawnPart()
         "/spawn_part",
         std::bind(&SpawnPart::spawn_part_cb_, this, std::placeholders::_1, std::placeholders::_2)
     );
+
+    spawn_sensor_srv_ = this->create_service<aprs_interfaces::srv::SpawnSensor>(
+        "/spawn_sensor",
+        std::bind(&SpawnPart::spawn_sensor_cb_, this, std::placeholders::_1, std::placeholders::_2)
+    );
 }
 
 void SpawnPart::spawn_part_cb_(
@@ -19,8 +24,60 @@ void SpawnPart::spawn_part_cb_(
     // Request message
     gz::msgs::EntityFactory req;
 
+    req.set_name(request->type);
     req.set_name(request->color + "_" + request->type + "_" + std::to_string(part_count));
     part_count++;
+
+    // File
+    RCLCPP_INFO_STREAM(this->get_logger(), request->xml);
+    req.set_sdf(request->xml);
+
+    // Pose
+    std::vector rpy = get_rpy_from_quaternion(request->pose.orientation.x, request->pose.orientation.y,
+                                              request->pose.orientation.z, request->pose.orientation.w);
+    gz::math::Pose3d pose{request->pose.position.x, request->pose.position.y, request->pose.position.z,
+                          rpy[0], rpy[1], rpy[2]};
+    gz::msgs::Set(req.mutable_pose(), pose);
+
+    // Request
+    gz::transport::Node node;
+    gz::msgs::Boolean rep;
+    bool result;
+    unsigned int timeout = 5000;
+    bool executed = node.Request(service, req, timeout, rep, result);
+
+    if (executed) {
+        if (result && rep.data()) {
+        RCLCPP_INFO(this->get_logger(), "Requested creation of entity.");
+        } else {
+        RCLCPP_ERROR(
+            this->get_logger(), "Failed request to create entity.\n %s",
+            req.DebugString().c_str());
+        }
+    } else {
+        RCLCPP_ERROR(
+        this->get_logger(), "Request to create entity from service [%s] timed out..\n %s",
+        service.c_str(), req.DebugString().c_str());
+        response->set__success(false);
+        return;
+    }
+    RCLCPP_INFO(this->get_logger(), "OK creation of entity.");
+    response->set__success(true);
+}
+
+void SpawnPart::spawn_sensor_cb_(
+    const std::shared_ptr<aprs_interfaces::srv::SpawnSensor::Request> request,
+    std::shared_ptr<aprs_interfaces::srv::SpawnSensor::Response> response
+){
+    std::string world_name = "lab";
+    std::string service{"/world/" + world_name + "/create"};
+
+    // Request message
+    gz::msgs::EntityFactory req;
+
+    // req.set_name(request->name + "_" + std::to_string(sensor_count));
+    req.set_name(request->name);
+    sensor_count++;
 
     // File
     RCLCPP_INFO_STREAM(this->get_logger(), request->xml);
