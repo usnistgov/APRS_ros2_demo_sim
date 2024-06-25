@@ -124,14 +124,14 @@ class EnvironmentStartup(Node):
     
     def spawn_sensors(self):
         sensor_type = "advanced_logical_camera"
-        xyz = [0, 0, 3]
+        xyz = [1.0, 0.0, 1.5]
         name = "advanced_logical_camera"
         
         new_sensor_pose = Pose()
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
         new_sensor_pose.position.z = float(xyz[2])
-        orientation = quaternion_from_euler(math.pi, math.pi/2, 0.0)
+        orientation = quaternion_from_euler(math.pi, -math.pi/2, 0.0)
         new_sensor_pose.orientation.x = float(orientation[0])
         new_sensor_pose.orientation.y = float(orientation[1])
         new_sensor_pose.orientation.z = float(orientation[2])
@@ -189,9 +189,9 @@ class EnvironmentStartup(Node):
         request.color = ["blue", "green", "red", "purple", "orange"][randint(0,4)]
         
         new_part_pose = Pose()
-        new_part_pose.position.x = 0.0
+        new_part_pose.position.x = 1.0
         new_part_pose.position.y = 0.0
-        new_part_pose.position.z = 3.0
+        new_part_pose.position.z = 1.5
         new_part_pose.orientation.x = 0.0
         new_part_pose.orientation.y = 0.0
         new_part_pose.orientation.z = 0.0

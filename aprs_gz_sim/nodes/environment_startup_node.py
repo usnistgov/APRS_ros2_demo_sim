@@ -11,10 +11,10 @@ def main():
     startup_node = EnvironmentStartup()
 
     sleep(5)
-
-    startup_node.spawn_parts_for_motoman()
     
     startup_node.spawn_sensors()
+
+    startup_node.spawn_parts_for_motoman()
     
     startup_node.environment_ready()
 
