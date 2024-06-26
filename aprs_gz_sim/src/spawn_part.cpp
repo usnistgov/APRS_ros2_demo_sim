@@ -29,7 +29,6 @@ void SpawnPart::spawn_part_cb_(
     part_count++;
 
     // File
-    RCLCPP_INFO_STREAM(this->get_logger(), request->xml);
     req.set_sdf(request->xml);
 
     // Pose
@@ -80,7 +79,6 @@ void SpawnPart::spawn_sensor_cb_(
     sensor_count++;
 
     // File
-    RCLCPP_INFO_STREAM(this->get_logger(), request->xml);
     req.set_sdf(request->xml);
 
     // Pose

@@ -167,7 +167,7 @@ class EnvironmentStartup(Node):
         xml = ET.fromstring(self.get_sdf(file_path))
         
         r, g, b = self.colors[p_color]
-        color_string = str(randint(0,255)/255) + " " + str(randint(0,255)/255) + " " + str(randint(0,255)/255) + " 1" 
+        color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
         for elem in xml.find('model').find('link').findall('visual'):
             if elem.attrib['name'] == "base":

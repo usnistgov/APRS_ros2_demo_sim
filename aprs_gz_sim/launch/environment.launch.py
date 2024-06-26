@@ -33,7 +33,13 @@ def launch_setup(context, *args, **kwargs):
         package='aprs_gz_sim',
         executable='spawn_part'
     )
-
+    
+    
+    environment_startup_node = Node(
+        package='aprs_gz_sim',
+        executable='environment_startup_node.py'
+    )
+    
     combined_robots = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [os.path.join(get_package_share_directory('aprs_gz_sim'),'launch', 'combined_description.launch.py')]
@@ -52,7 +58,8 @@ def launch_setup(context, *args, **kwargs):
         gz,
         combined_robots,
         seperate_robots,
-        spawn_part_node
+        spawn_part_node,
+        environment_startup_node
         ]
     
 def generate_launch_description():
