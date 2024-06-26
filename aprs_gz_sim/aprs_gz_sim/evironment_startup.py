@@ -15,7 +15,6 @@ from aprs_gz_sim.spawn_params import SpawnParams, PartSpawnParams
 
 import math
 import os
-from time import sleep
 from random import randint
 
 import xml.etree.ElementTree as ET
@@ -122,11 +121,7 @@ class EnvironmentStartup(Node):
 
         return ET.tostring(xml, encoding="unicode")
     
-    def spawn_sensors(self):
-        sensor_type = "advanced_logical_camera"
-        xyz = [1.0, 0.0, 1.5]
-        name = "advanced_logical_camera"
-        
+    def spawn_sensors(self, name: str, sensor_type: str, xyz: list[str]):
         new_sensor_pose = Pose()
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
@@ -181,17 +176,18 @@ class EnvironmentStartup(Node):
 
         return ET.tostring(xml, encoding="unicode")
     
-    def spawn_parts_for_motoman(self):
+    def spawn_part(self, part_type: str, color: str, xyz: list[float]):
+        self.get_logger().info("INSIDE SPAWN PART")
         # while True:
         request = SpawnPart.Request()
         
-        request.type = ["battery", "pump", "regulator", "sensor"][randint(0,3)]
-        request.color = ["blue", "green", "red", "purple", "orange"][randint(0,4)]
+        request.type = part_type
+        request.color = color
         
         new_part_pose = Pose()
-        new_part_pose.position.x = 1.0
-        new_part_pose.position.y = 0.0
-        new_part_pose.position.z = 1.5
+        new_part_pose.position.x = float(xyz[0])
+        new_part_pose.position.z = float(xyz[2])
+        new_part_pose.position.y = float(xyz[1])
         new_part_pose.orientation.x = 0.0
         new_part_pose.orientation.y = 0.0
         new_part_pose.orientation.z = 0.0
@@ -203,7 +199,6 @@ class EnvironmentStartup(Node):
         
         future = self.spawn_part_client.call_async(request)
         
-        sleep(10)
         rclpy.spin_until_future_complete(self, future, timeout_sec=5)
 
         if not future.done():

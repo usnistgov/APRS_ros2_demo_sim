@@ -75,8 +75,8 @@ void SpawnPart::spawn_sensor_cb_(
     // Request message
     gz::msgs::EntityFactory req;
 
-    // req.set_name(request->name + "_" + std::to_string(sensor_count));
-    req.set_name(request->name);
+    req.set_name(request->name + "_" + std::to_string(sensor_count));
+    // req.set_name(request->name);
     sensor_count++;
 
     // File
