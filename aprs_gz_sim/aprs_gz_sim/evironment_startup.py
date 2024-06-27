@@ -91,6 +91,8 @@ class EnvironmentStartup(Node):
         
         self.part_count = 0
         
+        self.used_ros_topic_names = []
+        
         # Setup TF listener
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -99,9 +101,18 @@ class EnvironmentStartup(Node):
         self.spawn_sensor_client = self.create_client(SpawnSensor, "/spawn_sensor")
 
     def get_sensor_xml(self, file_path, sensor_type, name = "camera_1"):
+        
+        
         xml = ET.fromstring(self.get_sdf(file_path))
         
-        xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
+        # xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
+                
+        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic"
+                
+        xml.find("model").find("link").find("sensor").find("plugin").find("rostopic").text = f"{name}_ros_topic"
+        xml.find("model").find("link").find("sensor").find("plugin").find("gztopic").text = f"{name}_gz_topic"
+        xml.find("model").find("link").find("sensor").find("plugin").find("camera_name").text = name
+        xml.find("model").find("link").find("sensor").find("plugin").find("frame_name").text = f"{name}_gz_topic"  
         
         ray_sensors = ["break_beam", "proximity", "laser_profiler", "lidar"]
         if sensor_type in ray_sensors:
@@ -126,7 +137,7 @@ class EnvironmentStartup(Node):
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
         new_sensor_pose.position.z = float(xyz[2])
-        orientation = quaternion_from_euler(math.pi, -math.pi/2, 0.0)
+        orientation = quaternion_from_euler(math.pi, math.pi, 0.0)
         new_sensor_pose.orientation.x = float(orientation[0])
         new_sensor_pose.orientation.y = float(orientation[1])
         new_sensor_pose.orientation.z = float(orientation[2])

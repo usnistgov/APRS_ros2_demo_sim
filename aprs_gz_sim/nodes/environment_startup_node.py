@@ -13,16 +13,16 @@ def main():
 
     sleep(10)
     
-    startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [0.0, 0.0, 5.0])
-    # startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [-0.85, 0.5, 1.5])
+    startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [-0.85, 0.5, 1.5])
+    startup_node.spawn_sensors("second_advanced_logical_camera", "advanced_logical_camera", [1.1, -1.375, 1.0])
 
     part_type = "battery"
     part_color = "blue"
-    startup_node.spawn_part(part_type, part_color, [0.1, -0.073025, 0.9])
+    startup_node.spawn_part(part_type, part_color, [-0.85, 0.5, 1.5])
     
-    # part_type = ["battery", "pump", "regulator", "sensor"][randint(0,3)]
-    # part_color = ["blue", "green", "red", "purple", "orange"][randint(0,4)]
-    # startup_node.spawn_part(part_type, part_color, [-0.85, 0.5, 1.5])
+    part_type = "regulator"
+    part_color = "green"
+    startup_node.spawn_part(part_type, part_color, [1.1, -1.375, 1.0])
     
     startup_node.environment_ready()
 
