@@ -23,7 +23,7 @@
       </visual>
 
       <collision name="optical_table_collision">
-        <pose>-0.1000125 0.320675 0.422275 0 0 0</pose>
+        <pose>-0.1000125 0.320675 0.45 0 0 0</pose>
         <geometry>
           <box>
             <size> 2.4384 1.2192 0.84455  </size>

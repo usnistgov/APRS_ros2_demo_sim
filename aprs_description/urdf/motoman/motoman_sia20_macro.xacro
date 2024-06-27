@@ -42,6 +42,8 @@
 			</collision>
 		</link>
 
+		<link name="motoman_gripper_link"/>
+
 		<joint name = "motoman_base_joint" type = "fixed">
 			<origin rpy = "0 0 0" xyz = "0 0 0"/>
 			<parent link = "${parent}"/>
@@ -220,14 +222,10 @@
 			<xacro:default_joint_misc/>
 		</joint>
 
-		<!-- link motoman_tool0-->
-		<link name="motoman_tool0"/>
-
-		<!-- joint link_t-motoman_tool0 -->
-		<joint name="link_t-motoman_tool0" type="fixed">
-			<origin rpy="0 0 -3.1415" xyz="0 0 0"/>
-			<parent link="link_t"/>
-			<child  link="motoman_tool0"/>
+		<joint name = "motoman_link_t_to_gripper" type = "fixed">
+			<origin xyz = "0 0.02 0" rpy = "-1.57 0 0"/>
+			<parent link = "link_t"/>
+			<child link = "motoman_gripper_link"/>
 		</joint>
 
   </xacro:macro>
