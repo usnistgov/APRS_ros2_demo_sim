@@ -11,10 +11,12 @@ find_package(builtin_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(ariac_msgs REQUIRED)
 
 set(srv_files
   "srv/SpawnPart.srv"
   "srv/SpawnSensor.srv"
+  "srv/PickPart.srv"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -24,6 +26,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   builtin_interfaces
   std_msgs
   geometry_msgs
+  ariac_msgs
 
   ADD_LINTER_TESTS
 )

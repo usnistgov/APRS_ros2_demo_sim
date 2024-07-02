@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_motoman">
     <group name="motoman_arm">
-      <chain base_link="world" tip_link="link_t" />
+      <chain base_link="world" tip_link="motoman_gripper" />
     </group>
 
     <group_state name="home" group="motoman_arm">

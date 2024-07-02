@@ -137,7 +137,7 @@ class EnvironmentStartup(Node):
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
         new_sensor_pose.position.z = float(xyz[2])
-        orientation = quaternion_from_euler(math.pi, math.pi, 0.0)
+        orientation = quaternion_from_euler(math.pi, -math.pi/2, 0.0)
         new_sensor_pose.orientation.x = float(orientation[0])
         new_sensor_pose.orientation.y = float(orientation[1])
         new_sensor_pose.orientation.z = float(orientation[2])
