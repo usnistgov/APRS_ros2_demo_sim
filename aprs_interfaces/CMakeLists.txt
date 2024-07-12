@@ -17,6 +17,8 @@ set(srv_files
   "srv/SpawnPart.srv"
   "srv/SpawnSensor.srv"
   "srv/PickPart.srv"
+  "srv/MoveCartesian.srv"
+  "srv/MoveToPose.srv"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}

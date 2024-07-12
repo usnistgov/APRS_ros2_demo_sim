@@ -1,0 +1,6 @@
+geometry_msgs/Pose[] poses
+float32 asf
+float32 vsf
+bool avoid_collisions
+---
+bool success
