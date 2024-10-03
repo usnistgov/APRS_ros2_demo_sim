@@ -57,8 +57,6 @@ RUN source /opt/ros/iron/setup.bash && \
     git clone https://github.com/sparsh-b/ariac_gz_plugins.git src/ariac_gz_plugins -b main && \
     git clone https://github.com/usnistgov/aprs-ros-conveyor.git src/aprs_ros_conveyor -b main && \
     git clone https://github.com/jfernandez37/moveit_test src/moveit_test -b individual_moveit_configs && \
-    # rosdep update && \
-    # rosdep install --from-paths src --ignore-src -y -r && \
     colcon build
 
 RUN echo 'source /home/ubuntu/moveit_ws/install/setup.bash' >> /home/ubuntu/.bashrc
