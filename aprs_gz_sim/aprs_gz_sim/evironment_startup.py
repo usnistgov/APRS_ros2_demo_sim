@@ -6,7 +6,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy
 
 from std_msgs.msg import Bool as BoolMsg
 
-from ros_gz_interfaces.srv import SpawnEntity
+from gazebo_msgs.srv import SpawnEntity
 
 from tf2_geometry_msgs import do_transform_pose
 
@@ -27,6 +27,8 @@ from geometry_msgs.msg import (
     PoseStamped,
     Vector3
 )
+
+from aprs_gz_sim.spawn_params import RobotSpawnParams
 
 from aprs_interfaces.srv import SpawnPart, SpawnSensor
 
@@ -79,7 +81,9 @@ class EnvironmentStartup(Node):
     def __init__(self):
         super().__init__("environment_startup_node")
 
-
+        self.declare_parameter('robot_description', '',
+                               ParameterDescriptor(description='APRS Lab Robots description'))
+        
         latching_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
 
         self.env_ready = False
@@ -99,6 +103,27 @@ class EnvironmentStartup(Node):
         
         self.spawn_part_client = self.create_client(SpawnPart, "/spawn_part")
         self.spawn_sensor_client = self.create_client(SpawnSensor, "/spawn_sensor")
+    
+    def spawn_entity(self, params: SpawnParams, wait=True) -> bool:
+        self.spawn_client.wait_for_service()
+
+        # self.get_logger().info(f'Spawning: {params.name}')
+
+        req = SpawnEntity.Request()
+
+        req.name = params.name
+        req.xml = params.xml
+        req.initial_pose = params.initial_pose
+        req.robot_namespace = params.robot_namespace
+        req.reference_frame = params.reference_frame
+
+        future = self.spawn_client.call_async(req)
+
+        if wait:
+            rclpy.spin_until_future_complete(self, future)
+            return future.result().success
+        else:
+            return True
 
     def get_sensor_xml(self, file_path, sensor_type, name = "camera_1"):
         
@@ -228,4 +253,12 @@ class EnvironmentStartup(Node):
     
     def environment_ready(self):
         self.env_ready = True
+    
+    def spawn_robots(self):
+        urdf = ET.fromstring(self.get_parameter('robot_description').value)
+
+        params = RobotSpawnParams(
+            "aprs_lab_robots", ET.tostring(urdf, encoding="unicode"))
+
+        self.spawn_entity(params)
         

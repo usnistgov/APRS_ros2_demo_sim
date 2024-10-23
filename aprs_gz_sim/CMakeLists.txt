@@ -13,12 +13,10 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclpy
   rclcpp
   aprs_interfaces
-  ros_gz_interfaces
 )
 
-find_package(gz-transport13 REQUIRED)
-
-find_package(gz-msgs10 REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 
 # set(GZ_TARGET_PREFIX gz)
 
@@ -39,20 +37,6 @@ install(DIRECTORY
 )
 
 ament_python_install_package(${PROJECT_NAME} SCRIPTS_DESTINATION lib/${PROJECT_NAME})
-
-add_executable(spawn_part src/spawn_part.cpp)
-target_include_directories(spawn_part PRIVATE include)
-
-target_link_libraries(spawn_part
-  gz-msgs10::core
-  gz-transport13::core
-)
-
-ament_target_dependencies(spawn_part ${THIS_PACKAGE_INCLUDE_DEPENDS})
-
-install(TARGETS spawn_part
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
-)
 
 install(PROGRAMS
   nodes/environment_startup_node.py
