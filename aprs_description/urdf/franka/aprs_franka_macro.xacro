@@ -2,9 +2,6 @@
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:macro name="aprs_franka">
 
-    <!-- Inclue franka robot macro -->
-    <!-- <xacro:include filename="$(find franka_description)/robots/common/franka_robot.xacro"/> -->
-
     <xacro:include filename="$(find aprs_description)/urdf/franka/aprs_franka.ros2_control.xacro"/>
 
     <xacro:property name="initial_positions_file" default="$(find aprs_description)/config/franka_initial_positions.yaml"/>
@@ -29,7 +26,7 @@
       inertials="${xacro.load_yaml('$(find aprs_description)/urdf/franka/fr3/inertials.yaml')}">
     </xacro:franka_hand>
 
-    <!-- Run fanuc macro -->
+    <!-- Run franka macro -->
     
     <xacro:aprs_franka_ros2_control
       name="franka"

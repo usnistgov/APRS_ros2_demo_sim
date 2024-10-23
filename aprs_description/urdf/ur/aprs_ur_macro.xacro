@@ -10,9 +10,6 @@
     <!-- Include ROS2 Control macro -->
     <xacro:include filename="$(find aprs_description)/urdf/ur/aprs_ur.ros2_control.xacro"/>
 
-    <!-- Inclue gripper macro -->
-    <!-- <xacro:include filename="$(find aprs_description)/urdf/vacuum_gripper/vacuum_grippper_macro.xacro"/> -->
-
     <xacro:property name="initial_positions_file" default="$(find aprs_description)/config/ur_initial_positions.yaml"/>
 
     <!-- Run ur macro -->
@@ -32,13 +29,6 @@
       name="ur"
       initial_positions="${xacro.load_yaml(initial_positions_file)}">
     </xacro:aprs_ur_ros2_control>
-
-    <!-- Run gripper macro -->
-    <!-- <xacro:vacuum_gripper
-      parent="tool0"
-      prefix="ur"
-      >
-    </xacro:vacuum_gripper> -->
 
   </xacro:macro>
 </robot>
