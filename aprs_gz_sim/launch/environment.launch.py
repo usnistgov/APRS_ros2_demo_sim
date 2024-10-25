@@ -20,32 +20,13 @@ from ament_index_python.packages import get_package_share_directory, PackageNotF
 def launch_setup(context, *args, **kwargs):
     world_path = os.path.join(get_package_share_directory('aprs_gz_sim'), 'worlds', 'lab.sdf')
     
-    urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', 'aprs_lab_robots.urdf.xacro')
-
-    doc = xacro.process_file(urdf)
-
-    robot_description_content = doc.toprettyxml(indent='  ')
-    
     use_seperate_descriptions = LaunchConfiguration("use_seperate_descriptions")
     
-    gazebo = IncludeLaunchDescription(
+    gz = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [FindPackageShare("gazebo_ros"), "/launch", "/gazebo.launch.py"]
-        ),
-        launch_arguments={
-            'world': world_path,
-        }.items()
-    )
-
-    # Robot state publisher
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        output='both',
-        parameters=[
-            {'use_sim_time': True}, 
-            {'robot_description': robot_description_content}
-        ],
+            [os.path.join(get_package_share_directory('ros_gz_sim'),'launch', 'gz_sim.launch.py')]),
+            launch_arguments=[('gz_args', [' -r -v4 '+ world_path])
+        ]
     )
     
     spawn_part_node = Node(
@@ -56,49 +37,8 @@ def launch_setup(context, *args, **kwargs):
     
     environment_startup_node = Node(
         package='aprs_gz_sim',
-        executable='environment_startup_node.py',
-        output='screen',
-        parameters=[
-            {'robot_description': robot_description_content}
-        ]
+        executable='environment_startup_node.py'
     )
-
-    # Robot state publisher
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        output='both',
-        parameters=[
-            {'use_sim_time': True}, 
-            {'robot_description': robot_description_content}
-        ],
-    )
-
-    # Joint state broadcaster
-    joint_state_broadcaster = Node(
-        package='controller_manager',
-        executable='spawner',
-        name='joint_state_broadcaster_spawner',
-        arguments=['joint_state_broadcaster'],
-        parameters=[
-            {'use_sim_time': True},
-        ],
-    )
-    
-    #Joint trajectory controllers
-    joint_trajectory_controllers = []
-    for robot in ['fanuc', 'franka', 'motoman', 'ur']:
-        joint_trajectory_controllers.append(Node(
-            package='controller_manager',
-            executable='spawner',
-            name=f'{robot}_controller_spawner',
-            arguments=[
-                f'{robot}_joint_trajectory_controller'
-            ],
-            parameters=[
-                {'use_sim_time': True},
-            ],
-        ))
     
     combined_robots = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -115,14 +55,11 @@ def launch_setup(context, *args, **kwargs):
     )
     
     return [
-        gazebo,
-        # combined_robots,
-        # seperate_robots,
-        # spawn_part_node,
-        environment_startup_node,
-        robot_state_publisher_node,
-        joint_state_broadcaster,
-        *joint_trajectory_controllers
+        gz,
+        combined_robots,
+        seperate_robots,
+        spawn_part_node,
+        environment_startup_node
         ]
     
 def generate_launch_description():

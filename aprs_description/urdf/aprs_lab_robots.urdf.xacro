@@ -16,7 +16,7 @@
   </joint>
 
   <joint name = "fanuc_world_to_base" type = "fixed">
-    <origin rpy = "0 0 0" xyz = "-0.5222875 -0.073025 0.87455"/>
+    <origin rpy = "0 0 0" xyz = "-0.5222875 -0.073025 0.84455"/>
     <parent link = "world"/>
     <child link = "aprs_fanuc_base_link"/>
   </joint>
@@ -28,7 +28,7 @@
   </joint>
 
   <joint name = "motoman_world_to_base" type = "fixed">
-    <origin rpy = "0 0 3.14159" xyz = "0.4953 -0.08255 0.87455"/>
+    <origin rpy = "0 0 3.14159" xyz = "0.4953 -0.08255 0.84455"/>
     <parent link = "world"/>
     <child link = "aprs_motoman_base_link"/>
   </joint>
@@ -40,7 +40,8 @@
   <xacro:include filename="$(find aprs_description)/urdf/franka/aprs_franka_macro.xacro"/>
 
   <xacro:include filename="$(find aprs_description)/urdf/motoman/aprs_motoman_macro.xacro"/>
-    
+    <!-- ROS2 Control Plugin -->
+  <xacro:arg name="controllers" default="$(find aprs_description)/config/robot_controllers.yaml" />
 
   <xacro:aprs_ur
     parent="aprs_ur_base_link">
@@ -56,14 +57,12 @@
     parent="aprs_motoman_base_link">
   </xacro:aprs_motoman>
 
-  <!-- ROS2 Control Plugin -->
-  <xacro:arg name="controllers" default="$(find aprs_description)/config/robot_controllers.yaml" />
-
   <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="aprs_robots_gazebo_ros2_control">
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <ros>
       </ros>
       <parameters>$(arg controllers)</parameters>
+      <load_params_directly>true</load_params_directly>
     </plugin>
   </gazebo>
 
