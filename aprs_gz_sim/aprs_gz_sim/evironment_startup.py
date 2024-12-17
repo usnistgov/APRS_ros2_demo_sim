@@ -137,7 +137,7 @@ class EnvironmentStartup(Node):
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
         new_sensor_pose.position.z = float(xyz[2])
-        orientation = quaternion_from_euler(math.pi, -math.pi/2, 0.0)
+        orientation = quaternion_from_euler(math.pi, math.pi/2, 0.0)
         new_sensor_pose.orientation.x = float(orientation[0])
         new_sensor_pose.orientation.y = float(orientation[1])
         new_sensor_pose.orientation.z = float(orientation[2])
@@ -207,6 +207,54 @@ class EnvironmentStartup(Node):
         request.pose = new_part_pose
         
         request.xml = self.get_part_xml(request.type, request.color)
+        
+        future = self.spawn_part_client.call_async(request)
+        
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5)
+
+        if not future.done():
+            raise Error("Timeout reached when calling spawn_part service")
+
+        result: SpawnPart.Response
+        result = future.result()
+
+        if not result.success:
+            self.get_logger().error("Error calling spawn_part service")
+            
+    def get_gear_xml(self, gear_size, color):
+        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", gear_size+"_gear", "model.sdf")
+        xml = ET.fromstring(self.get_sdf(file_path))
+        
+        r, g, b = self.colors[color]
+        color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
+
+        for elem in xml.find('model').find('link').findall('visual'):
+            if elem.attrib['name'] == "base":
+                elem.find("material").find("ambient").text = color_string
+                elem.find("material").find("diffuse").text = color_string
+
+        return ET.tostring(xml, encoding="unicode")
+    
+    def spawn_gear(self, gear_size: str, color: str, xyz: list[float]):
+        self.get_logger().info("INSIDE SPAWN GEAR")
+        # while True:
+        request = SpawnPart.Request()
+        
+        request.type = gear_size
+        request.color = color
+        
+        new_part_pose = Pose()
+        new_part_pose.position.x = float(xyz[0])
+        new_part_pose.position.z = float(xyz[2])
+        new_part_pose.position.y = float(xyz[1])
+        new_part_pose.orientation.x = 0.0
+        new_part_pose.orientation.y = 0.0
+        new_part_pose.orientation.z = 0.0
+        new_part_pose.orientation.w = 0.0
+        
+        request.pose = new_part_pose
+        
+        request.xml = self.get_gear_xml(request.type, request.color)
         
         future = self.spawn_part_client.call_async(request)
         

@@ -15,13 +15,13 @@ def main():
     
     startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [0.0, 0.0, 5.0])
 
-    part_type = "battery"
-    part_color = "blue"
-    startup_node.spawn_part(part_type, part_color, [0.5, 0.5, 1.5])
-    
-    part_type = "regulator"
+    part_type = "large"
     part_color = "green"
-    startup_node.spawn_part(part_type, part_color, [1.1, -1.375, 1.0])
+    startup_node.spawn_gear(part_type, part_color, [0.0, 0.25, 1.3])
+    
+    # part_type = "regulator"
+    # part_color = "green"
+    # startup_node.spawn_part(part_type, part_color, [1.1, -1.375, 1.0])
     
     startup_node.environment_ready()
 
