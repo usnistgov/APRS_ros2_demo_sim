@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <model name="medium_gear">
+  <model name="medium_gear_model">
     <static>false</static>
     <allow_auto_disable>false</allow_auto_disable>
 
-    <link name="medium_gear">
+    <link name="medium_gear_link">
       <inertial>
         <pose>0 0 0.02 0 0 1.57</pose>
         <mass>0.7</mass>

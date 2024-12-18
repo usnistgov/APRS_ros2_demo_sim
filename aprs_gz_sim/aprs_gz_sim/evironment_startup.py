@@ -223,13 +223,14 @@ class EnvironmentStartup(Node):
             
     def get_gear_xml(self, gear_size, color):
         file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", gear_size+"_gear", "model.sdf")
+        self.get_logger().info(file_path)
         xml = ET.fromstring(self.get_sdf(file_path))
         
         r, g, b = self.colors[color]
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
         for elem in xml.find('model').find('link').findall('visual'):
-            if elem.attrib['name'] == "base":
+            if elem.attrib['name'] == gear_size+"_gear_visual":
                 elem.find("material").find("ambient").text = color_string
                 elem.find("material").find("diffuse").text = color_string
 
@@ -255,6 +256,8 @@ class EnvironmentStartup(Node):
         request.pose = new_part_pose
         
         request.xml = self.get_gear_xml(request.type, request.color)
+        
+        self.get_logger().info("\n"*15 + request.xml + "\n"*15)
         
         future = self.spawn_part_client.call_async(request)
         
