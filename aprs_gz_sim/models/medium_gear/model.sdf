@@ -21,7 +21,7 @@
       <visual name="medium_gear">
         <geometry>
           <mesh>
-            <uri>model://medium_gear/meshes/medium_gear_assembled.stl</uri>
+            <uri>model://medium_gear/meshes/medium_gear.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -34,7 +34,7 @@
         <pose>0 0 0.02 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://medium_gear/meshes/medium_gear_assembled.stl</uri>
+            <uri>model://medium_gear/meshes/medium_gear.stl</uri>
           </mesh>
         </geometry>
         <max_contacts>20</max_contacts>

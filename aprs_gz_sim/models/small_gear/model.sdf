@@ -21,7 +21,7 @@
       <visual name="small_gear_visual">
         <geometry>
           <mesh>
-            <uri>model://small_gear/meshes/small_gear_assembled.stl</uri>
+            <uri>model://small_gear/meshes/small_gear.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -34,7 +34,7 @@
         <pose>0 0 0.02 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://small_gear/meshes/small_gear_assembled.stl</uri>
+            <uri>model://small_gear/meshes/small_gear.stl</uri>
           </mesh>
         </geometry>
         <max_contacts>20</max_contacts>

@@ -21,7 +21,7 @@
       <visual name="large_gear_visual">
         <geometry>
           <mesh>
-            <uri>model://large_gear/meshes/large_gear_assembled.stl</uri>
+            <uri>model://large_gear/meshes/large_gear_simplified.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -34,7 +34,7 @@
         <pose>0 0 0.02 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://large_gear/meshes/large_gear_assembled.stl</uri>
+            <uri>model://large_gear/meshes/large_gear_simplified.stl</uri>
           </mesh>
         </geometry>
         <max_contacts>20</max_contacts>
