@@ -17,7 +17,7 @@ def main():
 
     part_type = "medium"
     part_color = "green"
-    startup_node.spawn_gear(part_type, part_color, [0.0, 0.25, 1.3])
+    startup_node.spawn_gear(part_type, part_color, [0.0, 0.25, 5])
     
     # part_type = "regulator"
     # part_color = "green"

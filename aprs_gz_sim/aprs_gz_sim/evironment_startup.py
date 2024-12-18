@@ -230,7 +230,7 @@ class EnvironmentStartup(Node):
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
         for elem in xml.find('model').find('link').findall('visual'):
-            if elem.attrib['name'] == gear_size+"_gear_visual":
+            if elem.attrib['name'] == gear_size+"_tray":
                 elem.find("material").find("ambient").text = color_string
                 elem.find("material").find("diffuse").text = color_string
 
@@ -271,6 +271,9 @@ class EnvironmentStartup(Node):
 
         if not result.success:
             self.get_logger().error("Error calling spawn_part service")
+
+        else:
+            self.get_logger().info("\n"*5 + "Successfully spwned gear" + "\n"*5)
     
     def publish_environment_status(self):
         msg = BoolMsg()

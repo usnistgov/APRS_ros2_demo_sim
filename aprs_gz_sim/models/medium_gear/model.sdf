@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <model name="medium_gear_model">
+  <model name="medium_gear">
     <static>false</static>
     <allow_auto_disable>false</allow_auto_disable>
 
-    <link name="medium_gear_link">
+    <link name="medium_gear">
       <inertial>
         <pose>0 0 0.02 0 0 1.57</pose>
         <mass>0.7</mass>
@@ -18,7 +18,7 @@
         </inertia>
       </inertial>
       
-      <visual name="medium_gear_visual">
+      <visual name="medium_gear">
         <geometry>
           <mesh>
             <uri>model://medium_gear/meshes/medium_gear_assembled.stl</uri>
