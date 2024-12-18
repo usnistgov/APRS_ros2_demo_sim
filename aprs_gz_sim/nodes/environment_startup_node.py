@@ -15,7 +15,7 @@ def main():
     
     startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [0.0, 0.0, 5.0])
 
-    part_type = "large"
+    part_type = "medium"
     part_color = "green"
     startup_node.spawn_gear(part_type, part_color, [0.0, 0.25, 1.3])
     
