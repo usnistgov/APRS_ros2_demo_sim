@@ -31,11 +31,14 @@
       </visual>
 
       <collision name="large_gear_tray_collision">
-        <pose>0 0 0.02 0 0 0</pose>
+        <pose>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://large_gear_tray/meshes/large_gear_part_tray.stl</uri>
           </mesh>
+          <!-- <box>
+            <size> 0.210 0.138 0.015 </size>
+          </box> -->
         </geometry>
         <max_contacts>20</max_contacts>
         <surface>

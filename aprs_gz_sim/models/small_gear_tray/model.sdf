@@ -31,7 +31,7 @@
       </visual>
 
       <collision name="small_gear_tray_collision">
-        <pose>0 0 0.02 0 0 0</pose>
+        <pose>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://small_gear_tray/meshes/small_gear_part_tray.stl</uri>
