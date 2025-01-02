@@ -15,9 +15,9 @@ def main():
     
     startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [0.0, 0.0, 5.0])
 
-    part_type = "medium_gear"
-    part_color = "green"
-    startup_node.spawn_tray(part_type, part_color, [0.0, 0.25, 5])
+    part_type = "large_gear"
+    part_color = "black"
+    startup_node.spawn_tray(part_type, part_color, [0.0, 0.25, 0.9], 45, ["slot_1", "slot_2"])
     
     # part_type = "regulator"
     # part_color = "green"

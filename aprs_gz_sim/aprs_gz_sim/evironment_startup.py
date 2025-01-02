@@ -68,12 +68,42 @@ class Error(Exception):
       return repr(self.value)
 
 class EnvironmentStartup(Node):
+    gear_offsets_ = {
+        "small_gear_tray": {
+            'slot_1': (-0.045, 0.045),
+            'slot_2': (0.045, 0.045),
+            'slot_3': (-0.045, -0.045),
+            'slot_4': (0.045, -0.045),
+        },
+        "medium_gear_tray": {
+            'slot_1': (-0.050, 0.050),
+            'slot_2': (0.050, 0.050),
+            'slot_3': (-0.050, -0.050),
+            'slot_4': (0.050, -0.050),
+        },
+        "large_gear_tray": {
+            'slot_1': (-0.052, 0.06),
+            'slot_2': (0.052, 0.06),
+        },
+        "m2l1_kit_tray": {
+            'lg_1': (0.0, -0.075),
+            'mg_1': (-0.065, 0.0),
+            'mg_2': (0.065, 0.0),
+        },
+        "s2l2_kit_tray": {
+            'lg_1': (-0.052, -0.060),
+            'lg_2': (0.052, -0.060),
+            'sg_1': (-0.045, 0.045),
+            'sg_2': (0.045, 0.045),
+    }}
+    
     colors = {
         'blue': (0, 0, 168),
         'green': (0, 100, 0),
         'red': (139, 0, 0),
         'purple': (138, 0, 226),
-        'orange': (255, 140, 0)   
+        'orange': (255, 140, 0),
+        'black': (0, 0, 0)
     }
     
     def __init__(self):
@@ -290,7 +320,7 @@ class EnvironmentStartup(Node):
 
         return ET.tostring(xml, encoding="unicode")
     
-    def spawn_tray(self, tray_name: str, color: str, xyz: list[float]):
+    def spawn_tray(self, tray_name: str, color: str, xyz: list[float], rotation: float = 0.0, occupied_slots:list[str]=[]):
         self.get_logger().info("INSIDE SPAWN TRAY")
         # while True:
         request = SpawnPart.Request()
@@ -302,10 +332,12 @@ class EnvironmentStartup(Node):
         new_part_pose.position.x = float(xyz[0])
         new_part_pose.position.z = float(xyz[2])
         new_part_pose.position.y = float(xyz[1])
-        new_part_pose.orientation.x = 0.0
-        new_part_pose.orientation.y = 0.0
-        new_part_pose.orientation.z = 0.0
-        new_part_pose.orientation.w = 0.0
+        rad_rot = rotation*math.pi/180
+        orientation = quaternion_from_euler(rad_rot, 0.0, 3.14159)
+        new_part_pose.orientation.x = float(orientation[0])
+        new_part_pose.orientation.y = float(orientation[1])
+        new_part_pose.orientation.z = float(orientation[2])
+        new_part_pose.orientation.w = float(orientation[3])
         
         request.pose = new_part_pose
         
@@ -328,6 +360,23 @@ class EnvironmentStartup(Node):
 
         else:
             self.get_logger().info("\n"*5 + "Successfully spwned tray" + "\n"*5)
+            occupied_slots = list(set(occupied_slots))
+            for slot in occupied_slots:
+                __import__("time").sleep(5)
+                if slot in self.gear_offsets_[tray_name+"_tray"].keys():
+                    slot_x, slot_y = self.gear_offsets_[tray_name+"_tray"][slot]
+                    self.get_logger().info(f"Slot x: {slot_x} slot_y: {slot_y}")
+                    new_x = slot_x * math.cos(rad_rot) - slot_y * math.sin(rad_rot)
+                    new_y = slot_x * math.sin(rad_rot) + slot_y * math.cos(rad_rot)
+                    self.get_logger().info(f"New x: {new_x} new y: {new_y}")
+                    if "small" in tray_name or "sg" in slot:
+                        slot_size = "small"
+                    elif "medium" in tray_name or "mg" in slot:
+                        slot_size = "medium"
+                    else:
+                        slot_size = "large"
+                    self.get_logger().info(str([xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.007]))
+                    self.spawn_gear(slot_size, "green", [xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.007])
     
     def publish_environment_status(self):
         msg = BoolMsg()
