@@ -16,6 +16,7 @@ from aprs_gz_sim.spawn_params import SpawnParams, PartSpawnParams
 import math
 import os
 from random import randint
+from time import sleep
 
 import xml.etree.ElementTree as ET
 
@@ -362,7 +363,7 @@ class EnvironmentStartup(Node):
             self.get_logger().info("\n"*5 + "Successfully spwned tray" + "\n"*5)
             occupied_slots = list(set(occupied_slots))
             for slot in occupied_slots:
-                __import__("time").sleep(5)
+                sleep(5)
                 if slot in self.gear_offsets_[tray_name+"_tray"].keys():
                     slot_x, slot_y = self.gear_offsets_[tray_name+"_tray"][slot]
                     self.get_logger().info(f"Slot x: {slot_x} slot_y: {slot_y}")
@@ -377,6 +378,8 @@ class EnvironmentStartup(Node):
                         slot_size = "large"
                     self.get_logger().info(str([xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.007]))
                     self.spawn_gear(slot_size, "green", [xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.007])
+                else:
+                    self.get_logger().error(f"Slot {slot} does not exist in tray {tray_name}_tray")
     
     def publish_environment_status(self):
         msg = BoolMsg()
