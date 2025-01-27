@@ -22,6 +22,7 @@ def launch_setup(context, *args, **kwargs):
     robot_spawners = []
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
+    static_controllers = []
     for robot in ['fanuc', 'franka', 'motoman', 'ur']:
     # for robot in ["motoman", "fanuc"]:
         urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{robot}.urdf.xacro')
@@ -79,7 +80,19 @@ def launch_setup(context, *args, **kwargs):
             name='controller_spawner',
             namespace=robot,
             arguments=[
-                'joint_trajectory_controller'
+                'joint_trajectory_controller', '--inactive'
+            ],
+            parameters=[
+                {'use_sim_time': True},
+            ],
+        ))
+        
+        static_controllers.append(Node(
+            package='controller_manager',
+            executable='spawner',
+            name=f'static_controller_spawner',
+            arguments=[
+                'static_controller',
             ],
             parameters=[
                 {'use_sim_time': True},
@@ -97,6 +110,7 @@ def launch_setup(context, *args, **kwargs):
         *robot_state_publishers,
         *robot_spawners,
         *joint_state_broadcasters,
+        *static_controllers,
         *joint_trajectory_controllers,
         controller_switcher
     ]
