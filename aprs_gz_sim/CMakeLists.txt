@@ -56,6 +56,8 @@ install(TARGETS spawn_part
 
 install(PROGRAMS
   nodes/environment_startup_node.py
+  nodes/combined_controller_switcher_node.py
+  nodes/seperate_controller_switcher_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -85,12 +85,20 @@ def launch_setup(context, *args, **kwargs):
                 {'use_sim_time': True},
             ],
         ))
+        
+        # robot switcher
+        controller_switcher = Node(
+            package='aprs_gz_sim',
+            executable='seperate_controller_switcher_node.py',
+            output='screen'
+        )
 
     nodes_to_start = [
         *robot_state_publishers,
         *robot_spawners,
         *joint_state_broadcasters,
-        *joint_trajectory_controllers
+        *joint_trajectory_controllers,
+        controller_switcher
     ]
 
     return nodes_to_start

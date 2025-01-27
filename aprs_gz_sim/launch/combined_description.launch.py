@@ -50,15 +50,34 @@ def launch_setup(context, *args, **kwargs):
         ],
     )
     
+    # robot switcher
+    controller_switcher = Node(
+        package='aprs_gz_sim',
+        executable='combined_controller_switcher_node.py',
+        output='screen'
+    )
+    
     #Joint trajectory controllers
     joint_trajectory_controllers = []
+    static_controllers = []
     for robot in ['fanuc', 'franka', 'motoman', 'ur']:
         joint_trajectory_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
-            name=f'{robot}_controller_spawner',
+            name=f'{robot}_joint_trajectory_controller_spawner',
             arguments=[
-                f'{robot}_joint_trajectory_controller'
+                f'{robot}_joint_trajectory_controller', '--inactive'
+            ],
+            parameters=[
+                {'use_sim_time': True},
+            ],
+        ))
+        static_controllers.append(Node(
+            package='controller_manager',
+            executable='spawner',
+            name=f'{robot}_static_controller_spawner',
+            arguments=[
+                f'{robot}_static_controller',
             ],
             parameters=[
                 {'use_sim_time': True},
@@ -69,6 +88,7 @@ def launch_setup(context, *args, **kwargs):
         robot_state_publisher_node,
         gz_spawn_robot,
         joint_state_broadcaster,
+        controller_switcher,
         *joint_trajectory_controllers
     ]
 
