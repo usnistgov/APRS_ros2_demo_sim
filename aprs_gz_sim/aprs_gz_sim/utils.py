@@ -2,7 +2,15 @@
 
 import math
 import numpy as np
-from geometry_msgs.msg import Pose
+
+import math
+from typing import List, Tuple
+import PyKDL
+from geometry_msgs.msg import (
+    Pose,
+    Quaternion
+)
+
 
 def convert_pi_string_to_float(s: str) -> float:
     """Takes a string that contains pi and evaluates the expression. Returns a float
@@ -67,29 +75,6 @@ def quaternion_from_euler(roll, pitch, yaw):
 
     return q
 
-def euler_from_quaternion(quaternion):
-    """
-    Converts quaternion (w in last place) to euler roll, pitch, yaw
-    quaternion = [x, y, z, w]
-    """
-    x = quaternion.x
-    y = quaternion.y
-    z = quaternion.z
-    w = quaternion.w
-
-    sinr_cosp = 2 * (w * x + y * z)
-    cosr_cosp = 1 - 2 * (x * x + y * y)
-    roll = np.arctan2(sinr_cosp, cosr_cosp)
-
-    sinp = 2 * (w * y - z * x)
-    pitch = np.arcsin(sinp)
-
-    siny_cosp = 2 * (w * z + x * y)
-    cosy_cosp = 1 - 2 * (y * y + z * z)
-    yaw = np.arctan2(siny_cosp, cosy_cosp)
-
-    return roll, pitch, yaw
-
 def pose_info(xyz: list, rpy: list) -> Pose:
     xyz_floats = []
     rpy_floats = []
@@ -115,3 +100,92 @@ def pose_info(xyz: list, rpy: list) -> Pose:
     pose.orientation.z = q[3]
 
     return pose
+
+def multiply_pose(p1: Pose, p2: Pose) -> Pose:
+    '''
+    Use KDL to multiply two poses together.
+    Args:
+        p1 (Pose): Pose of the first frame
+        p2 (Pose): Pose of the second frame
+    Returns:
+        Pose: Pose of the resulting frame
+    '''
+
+    o1 = p1.orientation
+    frame1 = PyKDL.Frame(
+        PyKDL.Rotation.Quaternion(o1.x, o1.y, o1.z, o1.w),
+        PyKDL.Vector(p1.position.x, p1.position.y, p1.position.z))
+
+    o2 = p2.orientation
+    frame2 = PyKDL.Frame(
+        PyKDL.Rotation.Quaternion(o2.x, o2.y, o2.z, o2.w),
+        PyKDL.Vector(p2.position.x, p2.position.y, p2.position.z))
+
+    frame3 = frame1 * frame2
+
+    # return the resulting pose from frame3
+    pose = Pose()
+    pose.position.x = frame3.p.x()
+    pose.position.y = frame3.p.y()
+    pose.position.z = frame3.p.z()
+
+    q = frame3.M.GetQuaternion()
+    pose.orientation.x = q[0]
+    pose.orientation.y = q[1]
+    pose.orientation.z = q[2]
+    pose.orientation.w = q[3]
+
+    return pose
+
+
+def rpy_from_quaternion(q: Quaternion) -> Tuple[float, float, float]:
+    ''' 
+    Use KDL to convert a quaternion to euler angles roll, pitch, yaw.
+    Args:
+        q (Quaternion): quaternion to convert
+    Returns:
+        Tuple[float, float, float]: roll, pitch, yaw
+    '''
+    
+    R = PyKDL.Rotation.Quaternion(q.x, q.y, q.z, q.w)
+    return R.GetRPY()
+
+def build_pose(x,y,z,q : Quaternion)->Pose:
+    p = Pose()
+    p.position.x = x
+    p.position.y = y
+    p.position.z = z
+    p.orientation = q
+    return p
+
+
+def rad_to_deg_str(radians: float) -> str:
+    '''
+    Converts radians to degrees in the domain [-PI, PI]
+    Args:
+        radians (float): value in radians
+    Returns:
+        str: String representing the value in degrees
+    '''
+    
+    degrees = math.degrees(radians)
+    if degrees > 180:
+        degrees = degrees - 360
+    elif degrees < -180:
+        degrees = degrees + 360
+
+    if -1 < degrees < 1:
+        degrees = 0 
+    
+    return f'{degrees:.0f}' + chr(176)
+
+def rad_to_deg(radians: float) -> float:
+    '''
+    Converts radians to degrees
+    Args:
+        radians (float): Value in radians
+    Returns:
+        float: Value in degrees
+    '''
+    
+    return radians * math.pi/180

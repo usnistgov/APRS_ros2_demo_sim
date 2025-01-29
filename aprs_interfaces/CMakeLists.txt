@@ -13,6 +13,13 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(ariac_msgs REQUIRED)
 
+set(msg_files
+  "msg/Tray.msg"
+  "msg/Trays.msg"
+  "msg/SlotInfo.msg"
+  "msg/RobotChangeover.msg"
+)
+
 set(srv_files
   "srv/SpawnPart.srv"
   "srv/SpawnSensor.srv"
@@ -22,7 +29,8 @@ set(srv_files
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  ${srv_files}
+${msg_files}
+${srv_files}
 
   DEPENDENCIES
   builtin_interfaces

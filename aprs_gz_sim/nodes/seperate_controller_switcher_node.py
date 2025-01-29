@@ -3,11 +3,8 @@
 import rclpy
 from rclpy.node import Node
 
-from ariac_msgs.msg import Robots
 from controller_manager_msgs.srv import SwitchController
 from std_msgs.msg import Bool
-
-from rclpy.executors import SingleThreadedExecutor
 
 class RobotControllerSwitcher(Node):
     robots_ = ["fanuc", "franka", "motoman", "ur"]
