@@ -10,7 +10,7 @@ from ros_gz_interfaces.srv import SpawnEntity
 
 from tf2_geometry_msgs import do_transform_pose
 
-from aprs_gz_sim.utils import pose_info, convert_pi_string_to_float, euler_from_quaternion, quaternion_from_euler
+from aprs_gz_sim.utils import pose_info, convert_pi_string_to_float, rpy_from_quaternion, quaternion_from_euler
 from aprs_gz_sim.spawn_params import SpawnParams, PartSpawnParams
 
 import math
@@ -349,6 +349,8 @@ class EnvironmentStartup(Node):
         future = self.spawn_part_client.call_async(request)
         
         rclpy.spin_until_future_complete(self, future, timeout_sec=5)
+
+        self.get_logger().info("After future")
 
         if not future.done():
             raise Error("Timeout reached when calling spawn_part service")
