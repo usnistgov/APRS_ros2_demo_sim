@@ -24,10 +24,10 @@ class RobotControllerSwitcher(Node):
         self.recieved_msg = False
         self.robot_health_sub = self.create_subscription(Bool, '/aprs_environment_ready', self.env_ready_cb, 10)
         
-        self.fanuc_state = True
-        self.franka_state = True
-        self.motoman_state = True
-        self.ur_state = True
+        self.fanuc_state = False
+        self.franka_state = False
+        self.motoman_state = False
+        self.ur_state = False
         
         self.env_ready = False
     
@@ -62,9 +62,9 @@ class RobotControllerSwitcher(Node):
                         self.request.deactivate_controllers.append("motoman_static_controller")
                     
                     if not self.ur_state:
-                        for controller in self.motoman_controllers:
+                        for controller in self.ur_controllers:
                             self.request.activate_controllers.append(controller)
-                            self.motoman_state = True
+                            self.ur_state = True
                         self.request.deactivate_controllers.append("ur_static_controller")
                 
                 if not self.env_ready:
@@ -104,7 +104,7 @@ class RobotControllerSwitcher(Node):
 
                     
     def env_ready_cb(self, msg: Bool):
-        # self.get_logger().info("Recieved msg")
+        self.get_logger().info("Recieved msg")
         self.recieved_msg = True
         self.env_ready = msg.data
 

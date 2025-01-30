@@ -89,7 +89,8 @@ def launch_setup(context, *args, **kwargs):
         gz_spawn_robot,
         joint_state_broadcaster,
         controller_switcher,
-        *joint_trajectory_controllers
+        *joint_trajectory_controllers,
+        *static_controllers
     ]
 
     return nodes_to_start
