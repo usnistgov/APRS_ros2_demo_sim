@@ -116,7 +116,7 @@ class EnvironmentStartup(Node):
         self.env_ready = False
         self.environment_ready_publisher = self.create_publisher(BoolMsg, '/aprs_environment_ready', latching_qos)
         
-        self.bin_parts_pub_timer = self.create_timer(1.0, self.publish_environment_status)
+        # self.bin_parts_pub_timer = self.create_timer(1.0, self.publish_environment_status)
         
         self.spawn_client = self.create_client(SpawnEntity, '/spawn_entity')
         
@@ -386,4 +386,5 @@ class EnvironmentStartup(Node):
     
     def environment_ready(self):
         self.env_ready = True
+        self.publish_environment_status()
         

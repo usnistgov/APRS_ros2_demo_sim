@@ -23,6 +23,7 @@ def launch_setup(context, *args, **kwargs):
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
     static_controllers = []
+    controller_switchers = []
     for robot in ['fanuc', 'franka', 'motoman', 'ur']:
     # for robot in ["motoman", "fanuc"]:
         urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{robot}.urdf.xacro')
@@ -91,6 +92,7 @@ def launch_setup(context, *args, **kwargs):
             package='controller_manager',
             executable='spawner',
             name=f'static_controller_spawner',
+            namespace=robot,
             arguments=[
                 'static_controller',
             ],
@@ -100,11 +102,12 @@ def launch_setup(context, *args, **kwargs):
         ))
         
         # robot switcher
-        controller_switcher = Node(
+        controller_switchers.append(Node(
             package='aprs_gz_sim',
+            namespace=robot,
             executable='seperate_controller_switcher_node.py',
             output='screen'
-        )
+        ))
 
     nodes_to_start = [
         *robot_state_publishers,
@@ -112,7 +115,7 @@ def launch_setup(context, *args, **kwargs):
         *joint_state_broadcasters,
         *static_controllers,
         *joint_trajectory_controllers,
-        controller_switcher
+        *controller_switchers
     ]
 
     return nodes_to_start

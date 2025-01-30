@@ -27,7 +27,7 @@ def main():
     # part_color = "green"
     # startup_node.spawn_part(part_type, part_color, [1.1, -1.375, 1.0])
     
-    startup_node.environment_ready()
+    # startup_node.environment_ready()
 
     try:
         rclpy.spin(startup_node)
