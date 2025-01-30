@@ -360,8 +360,9 @@ class EnvironmentStartup(Node):
         else:
             self.get_logger().info("\n"*5 + "Successfully spwned tray" + "\n"*5)
             occupied_slots = list(set(occupied_slots))
+            if len(occupied_slots) > 0:
+                sleep(0.5)
             for slot in occupied_slots:
-                sleep(5)
                 if slot in self.gear_offsets_[tray_name+"_tray"].keys():
                     slot_x, slot_y = self.gear_offsets_[tray_name+"_tray"][slot]
                     self.get_logger().info(f"Slot x: {slot_x} slot_y: {slot_y}")
