@@ -20,16 +20,19 @@ class CloneNode(Node):
         
         self.spawner_node = EnvironmentStartup()
         self.motoman_trays_spawned = False
+        self.fanuc_trays_spawned = False
         
-        motoman_vision_quaternion = quaternion_from_euler(0,0, pi/4)
-        motoman_vision_orientation = Quaternion()
-        motoman_vision_orientation.w = motoman_vision_quaternion[0]
-        motoman_vision_orientation.x = motoman_vision_quaternion[1]
-        motoman_vision_orientation.y = motoman_vision_quaternion[2]
-        motoman_vision_orientation.z = motoman_vision_quaternion[3]
+        vision_quaternion = quaternion_from_euler(0, 0, -pi/2)
+        vision_orientation = Quaternion()
+        vision_orientation.w = vision_quaternion[0]
+        vision_orientation.x = vision_quaternion[1]
+        vision_orientation.y = vision_quaternion[2]
+        vision_orientation.z = vision_quaternion[3]
 
-        self.motoman_vision_pose_ = build_pose(0.0, 0.25, 0.9, motoman_vision_orientation)
+        self.fanuc_vision_pose_ = build_pose(-1.0, 0.75, 0.9, vision_orientation)
+        self.motoman_vision_pose_ = build_pose(0.0, 0.75, 0.9, vision_orientation)
         
+        fanuc_trays_info_sub = self.create_subscription(Trays, '/fanuc/table_trays_info', self.update_fanuc_trays, 10)
         motoman_trays_info_sub = self.create_subscription(Trays, '/motoman/table_trays_info', self.update_motoman_trays, 10)
         
         
@@ -40,8 +43,6 @@ class CloneNode(Node):
         all_trays: list[Tray] = msg.kit_trays + msg.part_trays
         
         for tray in all_trays:
-            self.get_logger().info(str(self.motoman_vision_pose_))
-            self.get_logger().info(str(tray.tray_pose.pose))
             world_pose = multiply_pose(self.motoman_vision_pose_, tray.tray_pose.pose)
             
             tray_type = self.tray_types_[tray.identifier - 13]
@@ -49,7 +50,7 @@ class CloneNode(Node):
             
             xyz = [world_pose.position.x, world_pose.position.y, world_pose.position.z]
             
-            rotation = rad_to_deg(rpy_from_quaternion(tray.tray_pose.pose.orientation)[-1])
+            rotation = rad_to_deg(rpy_from_quaternion(world_pose.orientation)[-1])
             
             occupied_slots = []
             for slot in tray.slots:
@@ -58,9 +59,37 @@ class CloneNode(Node):
                     occupied_slots.append("_".join(slot.name.split("_")[-2:]))
             
             self.spawner_node.spawn_tray(tray_type, tray_color, xyz, rotation, occupied_slots)
-        self.motoman_trays_spawned == True
+        self.motoman_trays_spawned = True
 
-        self.spawner_node.environment_ready()
+        if self.fanuc_trays_spawned:
+            self.spawner_node.environment_ready()
+    
+    def update_fanuc_trays(self, msg: Trays):
+        if self.fanuc_trays_spawned:
+            return
+        all_trays: list[Tray] = msg.kit_trays + msg.part_trays
+        
+        for tray in all_trays:
+            world_pose = multiply_pose(self.fanuc_vision_pose_, tray.tray_pose.pose)
+            
+            tray_type = self.tray_types_[tray.identifier - 13]
+            tray_color = "black"
+            
+            xyz = [world_pose.position.x, world_pose.position.y, world_pose.position.z]
+            
+            rotation = rad_to_deg(rpy_from_quaternion(world_pose.orientation)[-1])
+            
+            occupied_slots = []
+            for slot in tray.slots:
+                slot: SlotInfo
+                if slot.occupied:
+                    occupied_slots.append("_".join(slot.name.split("_")[-2:]))
+            
+            self.spawner_node.spawn_tray(tray_type, tray_color, xyz, rotation, occupied_slots)
+        self.fanuc_trays_spawned = True
+
+        if self.motoman_trays_spawned:
+            self.spawner_node.environment_ready()
 
 if __name__ == "__main__":
     rclpy.init()

@@ -17,7 +17,7 @@ class RobotControllerSwitcher(Node):
         for request in self.requests.values():
             request.strictness = SwitchController.Request.BEST_EFFORT
 
-        self.controllers = {robot: [robot+"_joint_trajectory_controller"] for robot in self.robots_}
+        self.controllers = {robot: ["joint_trajectory_controller"] for robot in self.robots_}
 
         self.recieved_msg = False
         self.robot_health_sub = self.create_subscription(Bool, '/aprs_environment_ready', self.env_ready_cb, 10)
@@ -41,12 +41,12 @@ class RobotControllerSwitcher(Node):
                             for controller in self.controllers[robot]:
                                 self.requests[robot].activate_controllers.append(controller)
                                 self.robot_states[robot] = True
-                            self.requests[robot].deactivate_controllers.append(f'{robot}_static_controller')
+                            self.requests[robot].deactivate_controllers.append(f'static_controller')
                         if self.robot_states[robot]:
                             for controller in self.controllers[robot]:
                                 self.requests[robot].deactivate_controllers.append(controller)
                                 self.robot_states[robot] = False
-                            self.requests[robot].activate_controllers.append(f'{robot}_static_controller')
+                            self.requests[robot].activate_controllers.append(f'static_controller')
                     
                     if self.requests[robot].activate_controllers or self.requests[robot].deactivate_controllers:
                         future = self.controller_switchers[robot].call_async(self.requests[robot])

@@ -287,9 +287,7 @@ class EnvironmentStartup(Node):
         request.pose = new_part_pose
         
         request.xml = self.get_gear_xml(request.type, request.color)
-        
-        self.get_logger().info("\n"*15 + request.xml + "\n"*15)
-        
+                
         future = self.spawn_part_client.call_async(request)
         
         rclpy.spin_until_future_complete(self, future, timeout_sec=5)
@@ -343,9 +341,7 @@ class EnvironmentStartup(Node):
         request.pose = new_part_pose
         
         request.xml = self.get_tray_xml(request.type, request.color)
-        
-        self.get_logger().info("\n"*15 + request.xml + "\n"*15)
-        
+                
         future = self.spawn_part_client.call_async(request)
         
         rclpy.spin_until_future_complete(self, future, timeout_sec=5)
@@ -378,8 +374,7 @@ class EnvironmentStartup(Node):
                         slot_size = "medium"
                     else:
                         slot_size = "large"
-                    self.get_logger().info(str([xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.007]))
-                    self.spawn_gear(slot_size, "green", [xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.007])
+                    self.spawn_gear(slot_size, "green", [xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.02])
                 else:
                     self.get_logger().error(f"Slot {slot} does not exist in tray {tray_name}_tray")
     
