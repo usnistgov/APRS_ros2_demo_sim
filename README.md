@@ -20,7 +20,7 @@
 
 5. Source all of the correct resources:
 
-    `echo "export GZ_SIM_RESOURCE_PATH=/home/ubuntu/gz_ws/install/ur_description/share/:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/gz_models/:/home/ubuntu/aprs_ws/install/aprs_description/share:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/worlds:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models" > ~/.bashrc`
+    `echo "export GZ_SIM_RESOURCE_PATH=/home/ubuntu/gz_ws/install/ur_description/share/:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/gz_models/:/home/ubuntu/aprs_ws/install/aprs_description/share:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/worlds:/home/ubuntu/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models:/home/ubuntu/aprs_ws/install/ariac_gz_plugins/share/ariac_gz_plugins/models" > ~/.bashrc`
 
 6. To open the simulation, use this command:
 
