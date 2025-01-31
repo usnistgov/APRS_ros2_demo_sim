@@ -18,6 +18,7 @@ set(msg_files
   "msg/Trays.msg"
   "msg/SlotInfo.msg"
   "msg/RobotChangeover.msg"
+  "msg/SimAdvancedLogicalCameraImage.msg"
 )
 
 set(srv_files

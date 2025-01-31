@@ -11,13 +11,15 @@ def main():
 
     startup_node = EnvironmentStartup()
 
-    sleep(10)
+    sleep(5)
+
+    part_type = "s2l2_kit"
+    part_color = "black"
+    startup_node.spawn_tray(part_type, part_color, [0.0, 0.25, 0.9], 45, ["sg_1", "lg_2"])
+    
+    sleep(3)
     
     startup_node.spawn_sensors("advanced_logical_camera", "advanced_logical_camera", [0.0, 0.0, 5.0])
-
-    # part_type = "s2l2_kit"
-    # part_color = "black"
-    # startup_node.spawn_tray(part_type, part_color, [0.0, 0.25, 0.9], 45, ["sg_1", "lg_2"])
     
     # part_type = "m2l1_kit"
     # part_color = "black"
@@ -27,7 +29,7 @@ def main():
     # part_color = "green"
     # startup_node.spawn_part(part_type, part_color, [1.1, -1.375, 1.0])
     
-    # startup_node.environment_ready()
+    startup_node.environment_ready()
 
     try:
         rclpy.spin(startup_node)

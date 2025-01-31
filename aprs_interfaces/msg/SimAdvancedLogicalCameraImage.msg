@@ -1,0 +1,3 @@
+std_msgs/Header header
+aprs_interfaces/Trays trays
+geometry_msgs/Pose sensor_pose

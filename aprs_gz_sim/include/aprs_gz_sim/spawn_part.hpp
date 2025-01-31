@@ -31,6 +31,8 @@ class SpawnPart : public rclcpp::Node
         gz::transport::Node gz_node;
 
         int part_count = 0;
+        int tray_count = 0;
+        int gear_count = 0;
         int sensor_count = 0;
 
         void spawn_part_cb_(const std::shared_ptr<aprs_interfaces::srv::SpawnPart::Request> request,

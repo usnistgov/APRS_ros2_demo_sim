@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
+from typing import Optional
 
 from std_msgs.msg import Bool as BoolMsg
 
@@ -99,6 +100,7 @@ class EnvironmentStartup(Node):
         'black': (0, 0, 0)
     }
     
+    
     def __init__(self):
         super().__init__("environment_startup_node")
 
@@ -113,6 +115,7 @@ class EnvironmentStartup(Node):
         self.spawn_client = self.create_client(SpawnEntity, '/spawn_entity')
         
         self.part_count = 0
+        self.tray_count = 0
         
         self.used_ros_topic_names = []
         
@@ -122,6 +125,7 @@ class EnvironmentStartup(Node):
         
         self.spawn_part_client = self.create_client(SpawnPart, "/spawn_part")
         self.spawn_sensor_client = self.create_client(SpawnSensor, "/spawn_sensor")
+        
 
     def get_sensor_xml(self, file_path, sensor_type, name = "camera_1"):
         
@@ -156,11 +160,12 @@ class EnvironmentStartup(Node):
         return ET.tostring(xml, encoding="unicode")
     
     def spawn_sensors(self, name: str, sensor_type: str, xyz: list[str]):
+        
         new_sensor_pose = Pose()
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
         new_sensor_pose.position.z = float(xyz[2])
-        orientation = quaternion_from_euler(math.pi, math.pi/2, 0.0)
+        orientation = quaternion_from_euler(math.pi/2, -math.pi/2, 0.0)
         new_sensor_pose.orientation.x = float(orientation[0])
         new_sensor_pose.orientation.y = float(orientation[1])
         new_sensor_pose.orientation.z = float(orientation[2])
@@ -245,7 +250,7 @@ class EnvironmentStartup(Node):
             self.get_logger().error("Error calling spawn_part service")
             
     def get_gear_xml(self, gear_size, color):
-        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", gear_size+"_gear", "model.sdf")
+        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", gear_size, "model.sdf")
         self.get_logger().info(file_path)
         xml = ET.fromstring(self.get_sdf(file_path))
         
@@ -253,18 +258,27 @@ class EnvironmentStartup(Node):
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
         for elem in xml.find('model').find('link').findall('visual'):
-            if elem.attrib['name'] == gear_size+"_gear":
+            if elem.attrib['name'] == gear_size:
                 elem.find("material").find("ambient").text = color_string
                 elem.find("material").find("diffuse").text = color_string
 
         return ET.tostring(xml, encoding="unicode")
     
-    def spawn_gear(self, gear_size: str, color: str, xyz: list[float]):
+    def spawn_gear(self, gear_size: str, color: str, xyz: list[float], tray_name: Optional[str] = None):
         self.get_logger().info("INSIDE SPAWN GEAR")
         # while True:
         request = SpawnPart.Request()
         
-        request.type = gear_size
+        suffix = ""
+        
+        if tray_name is not None:
+            suffix = "_" + tray_name
+        
+        gear_size = gear_size.replace("_gear", "")
+        
+        gear_name = gear_size + "_gear"
+        
+        request.type = gear_name + suffix
         request.color = color
         
         new_part_pose = Pose()
@@ -278,7 +292,7 @@ class EnvironmentStartup(Node):
         
         request.pose = new_part_pose
         
-        request.xml = self.get_gear_xml(request.type, request.color)
+        request.xml = self.get_gear_xml(gear_name, request.color)
                 
         future = self.spawn_part_client.call_async(request)
         
@@ -297,7 +311,8 @@ class EnvironmentStartup(Node):
             self.get_logger().info("\n"*5 + "Successfully spwned gear" + "\n"*5)
     
     def get_tray_xml(self, tray_name, color):
-        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", tray_name+"_tray", "model.sdf")
+        self.get_logger().info("Tray Name: "+ tray_name)
+        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", tray_name, "model.sdf")
         self.get_logger().info(file_path)
         xml = ET.fromstring(self.get_sdf(file_path))
         
@@ -305,7 +320,7 @@ class EnvironmentStartup(Node):
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
         for elem in xml.find('model').find('link').findall('visual'):
-            if elem.attrib['name'] == tray_name+"_tray":
+            if elem.attrib['name'] == tray_name:
                 elem.find("material").find("ambient").text = color_string
                 elem.find("material").find("diffuse").text = color_string
 
@@ -316,7 +331,9 @@ class EnvironmentStartup(Node):
         # while True:
         request = SpawnPart.Request()
         
-        request.type = tray_name
+        tray_name = tray_name.replace("_tray", "")
+        
+        request.type = tray_name + "_tray"
         request.color = color
         
         new_part_pose = Pose()
@@ -367,9 +384,11 @@ class EnvironmentStartup(Node):
                         slot_size = "medium"
                     else:
                         slot_size = "large"
-                    self.spawn_gear(slot_size, "green", [xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.02])
+                    self.spawn_gear(slot_size, "green", [xyz[0]+new_x, xyz[1]+new_y, xyz[2]+0.02], tray_name+f"_tray_{self.tray_count}")
+                    
                 else:
                     self.get_logger().error(f"Slot {slot} does not exist in tray {tray_name}_tray")
+            self.tray_count+=1
     
     def publish_environment_status(self):
         msg = BoolMsg()
