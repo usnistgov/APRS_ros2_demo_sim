@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 import math
-import numpy as np
 
 import math
-from typing import List, Tuple
+from typing import Tuple
 import PyKDL
 from geometry_msgs.msg import (
     Pose,

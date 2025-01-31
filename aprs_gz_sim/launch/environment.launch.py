@@ -1,7 +1,4 @@
 import os
-import yaml
-import xacro
-import rclpy.logging
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -9,12 +6,11 @@ from launch.actions import (
     OpaqueFunction,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition, UnlessCondition
 
-from ament_index_python.packages import get_package_share_directory, PackageNotFoundError
+from ament_index_python.packages import get_package_share_directory
 
 
 def launch_setup(context, *args, **kwargs):
