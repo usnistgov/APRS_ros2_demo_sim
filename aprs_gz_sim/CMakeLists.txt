@@ -35,6 +35,7 @@ install(DIRECTORY
   models
   gz_models
   worlds
+  config
   DESTINATION share/${PROJECT_NAME}
 )
 

@@ -27,11 +27,11 @@
     </xacro:aprs_fanuc_ros2_control>
 
     <!-- Run gripper macro -->
-    <xacro:vacuum_gripper
+    <!-- <xacro:vacuum_gripper
       parent="fanuc_gripper_link"
       prefix="fanuc"
       >
-    </xacro:vacuum_gripper>
+    </xacro:vacuum_gripper> -->
 
   </xacro:macro>
 </robot>

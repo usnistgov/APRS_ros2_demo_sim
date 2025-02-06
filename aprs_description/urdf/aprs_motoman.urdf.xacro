@@ -6,7 +6,7 @@
   <link name="aprs_motoman_base_link"/>
 
   <joint name = "motoman_world_to_base" type = "fixed">
-    <origin rpy = "0 0 3.14159" xyz = "0.4953 -0.08255 0.84455"/>
+    <origin rpy = "0 0 3.14159" xyz = "0.4953 -0.08255 0.9"/>
     <parent link = "world"/>
     <child link = "aprs_motoman_base_link"/>
   </joint>

@@ -34,11 +34,11 @@
     </xacro:aprs_ur_ros2_control>
 
     <!-- Run gripper macro -->
-    <xacro:vacuum_gripper
+    <!-- <xacro:vacuum_gripper
       parent="tool0"
       prefix="ur"
       >
-    </xacro:vacuum_gripper>
+    </xacro:vacuum_gripper> -->
 
   </xacro:macro>
 </robot>

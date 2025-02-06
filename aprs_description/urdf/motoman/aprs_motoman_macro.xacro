@@ -27,11 +27,11 @@
     </xacro:aprs_motoman_ros2_control>
 
     <!-- Run gripper macro -->
-    <xacro:vacuum_gripper
+    <!-- <xacro:vacuum_gripper
       parent="motoman_gripper_link"
       prefix="motoman"
       >
-    </xacro:vacuum_gripper>
+    </xacro:vacuum_gripper> -->
 
   </xacro:macro>
 </robot>

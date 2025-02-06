@@ -16,7 +16,10 @@ def launch_setup(context, *args, **kwargs):
     joint_trajectory_controllers = []
     static_controllers = []
     controller_switchers = []
-    for robot in ['fanuc', 'franka', 'motoman', 'ur']:
+
+    robots=['fanuc', 'franka', 'motoman', 'ur']
+    # robots=["motoman"]
+    for robot in robots:
     # for robot in ["motoman", "fanuc"]:
         urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', f'aprs_{robot}.urdf.xacro')
         

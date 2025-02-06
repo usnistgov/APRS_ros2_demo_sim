@@ -49,13 +49,25 @@ def launch_setup(context, *args, **kwargs):
         ),
         condition=IfCondition(use_seperate_descriptions)
     )
+
+    bridge_params = os.path.join(get_package_share_directory("aprs_gz_sim"),'config','gz_bridge.yaml')
+    ros_gz_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        arguments=[
+            '--ros-args',
+            '-p',
+            f'config_file:={bridge_params}',
+        ]
+    )
     
     return [
         gz,
         combined_robots,
         seperate_robots,
         spawn_part_node,
-        environment_startup_node
+        environment_startup_node,
+        ros_gz_bridge
         ]
     
 def generate_launch_description():

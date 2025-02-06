@@ -12,8 +12,8 @@
       
       <joint name="joint_b">
           <command_interface name="position">
-          <param name="min">{-2*pi}</param>
-          <param name="max">{2*pi}</param>
+          <param name="min">${-2*pi}</param>
+          <param name="max">${2*pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_b']}</param>
@@ -24,8 +24,8 @@
       
       <joint name="joint_e">
           <command_interface name="position">
-          <param name="min">{-2*pi}</param>
-          <param name="max">{2*pi}</param>
+          <param name="min">${-2*pi}</param>
+          <param name="max">${2*pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_e']}</param>
@@ -36,8 +36,8 @@
 
       <joint name="joint_l">
           <command_interface name="position">
-          <param name="min">{-pi}</param>
-          <param name="max">{pi}</param>
+          <param name="min">${-pi}</param>
+          <param name="max">${pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_l']}</param>
@@ -48,8 +48,8 @@
 
       <joint name="joint_r">
           <command_interface name="position">
-          <param name="min">{-2*pi}</param>
-          <param name="max">{2*pi}</param>
+          <param name="min">${-2*pi}</param>
+          <param name="max">${2*pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_r']}</param>
@@ -60,8 +60,8 @@
 
       <joint name="joint_s">
           <command_interface name="position">
-          <param name="min">{-2*pi}</param>
-          <param name="max">{2*pi}</param>
+          <param name="min">${-2*pi}</param>
+          <param name="max">${2*pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_s']}</param>
@@ -72,8 +72,8 @@
 
       <joint name="joint_t">
           <command_interface name="position">
-          <param name="min">{-2*pi}</param>
-          <param name="max">{2*pi}</param>
+          <param name="min">${-2*pi}</param>
+          <param name="max">${2*pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_t']}</param>
@@ -84,8 +84,8 @@
 
       <joint name="joint_u">
           <command_interface name="position">
-          <param name="min">{-2*pi}</param>
-          <param name="max">{2*pi}</param>
+          <param name="min">${-2*pi}</param>
+          <param name="max">${2*pi}</param>
           </command_interface>
           <state_interface name="position">
           <param name="initial_value">${initial_positions['joint_u']}</param>

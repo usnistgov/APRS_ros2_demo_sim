@@ -11,6 +11,7 @@ find_package(ament_cmake REQUIRED)
 find_package(gz-cmake3 REQUIRED)
 find_package(gz-plugin2 REQUIRED COMPONENTS register)
 find_package(gz-sim8 REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
@@ -25,6 +26,7 @@ target_include_directories(ConveyorPlugin PUBLIC include)
 target_link_libraries(ConveyorPlugin
   gz-plugin${GZ_PLUGIN_VER}::gz-plugin${GZ_PLUGIN_VER}
   gz-sim8::gz-sim8
+  ament_index_cpp::ament_index_cpp
 )
 
 ament_target_dependencies(ConveyorPlugin 
