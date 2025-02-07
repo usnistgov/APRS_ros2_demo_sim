@@ -21,7 +21,8 @@ def main():
     
     # # sleep(3)
     
-    startup_node.spawn_sensors("rgb_camera_1", "rgb_camera", [0.0, 0.0, 5.0])
+    startup_node.spawn_sensors("rgb_camera_1", "rgbd_camera", [0.0, 0.0, 5.0])
+    startup_node.spawn_sensors("rgb_camera_2", "rgbd_camera", [1.0, 0.0, 3.0])
     # startup_node.spawn_sensors("advanced_logical_camera_1", "advanced_logical_camera", [0.0, 0.0, 5.0])
     # startup_node.spawn_sensors("advanced_logical_camera_2", "advanced_logical_camera", [1.0, 0.0, 5.0])
 

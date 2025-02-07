@@ -190,6 +190,37 @@ class EnvironmentStartup(Node):
             plugin.find('camera_name').text = name
 
         return ET.tostring(xml, encoding="unicode")
+
+    def get_rgb_camera_xml(self, file_path, sensor_type, name = "camera_1"):
+        
+        
+        xml = ET.fromstring(self.get_sdf(file_path))
+        
+        # xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
+                
+        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic"
+                
+        xml.find("model").find("link").find("sensor").find("plugin").find("rgb_img_ros_topic").text = f"/ariac/sensors/{name}/rgb_image"
+        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_ros_topic").text = f"/ariac/sensors/{name}/camera_info"
+        xml.find("model").find("link").find("sensor").find("plugin").find("gz_topic").text = f"{name}_gz_topic"
+        xml.find("model").find("link").find("sensor").find("plugin").find("depth_img_ros_topic").text = f"/ariac/sensors/{name}/depth_image"
+        
+        ray_sensors = ["break_beam", "proximity", "laser_profiler", "lidar"]
+        if sensor_type in ray_sensors:
+            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+
+            # plugin.set('name', str(name + "_ros_plugin"))
+            plugin.find('sensor_name').text = name
+            plugin.find('frame_name').text = name + "_frame"
+        
+        cameras = ['rgb_camera', 'rgbd_camera', 'basic_logical_camera', 'advanced_logical_camera']
+        if sensor_type in cameras:
+            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+
+            # plugin.set('name', str(name + "_ros_plugin"))
+            plugin.find('camera_name').text = name
+
+        return ET.tostring(xml, encoding="unicode")
     
     def spawn_sensors(self, name: str, sensor_type: str, xyz: list[str]):
         
@@ -212,6 +243,8 @@ class EnvironmentStartup(Node):
         if sensor_type == "advanced_logical_camera":
             request.xml = self.get_advanced_logical_camera_xml(file_path, sensor_type, name)
         elif sensor_type == "rgb_camera":
+            request.xml = self.get_rgb_camera_xml(file_path, sensor_type, name)
+        elif sensor_type == "rgbd_camera":
             request.xml = self.get_rgb_camera_xml(file_path, sensor_type, name)
         
         future = self.spawn_sensor_client.call_async(request)
