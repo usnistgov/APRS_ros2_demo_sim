@@ -1,5 +1,7 @@
 import os
+import yaml
 import xacro
+import rclpy.logging
 from launch import LaunchDescription
 from launch.actions import (
     OpaqueFunction,
@@ -9,12 +11,38 @@ from launch_ros.actions import Node
 
 from ament_index_python.packages import get_package_share_directory
 
+def read_yaml(path):
+    with open(path, "r") as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError:
+            print("Unable to read configuration file")
+            return {} 
 
 def launch_setup(context, *args, **kwargs):
     # Get robot description
+    sensor_file = os.path.join(get_package_share_directory("aprs_gz_sim"), "config", "sensors.yaml")
+
+    sensor_config = read_yaml(sensor_file)
+
     urdf = os.path.join(get_package_share_directory('aprs_description'), 'urdf', 'aprs_lab_robots.urdf.xacro')
     
-    doc = xacro.process_file(urdf)
+    xacro_args = {}
+    if 'robot_cameras' in sensor_config.keys():
+        try:
+            if sensor_config['robot_cameras']['fanuc_camera']['active']:
+                xacro_args.update({'fanuc_camera_active_arg': 'true'})
+                xacro_args.update({'fanuc_camera_type_arg': sensor_config['robot_cameras'][f'fanuc_camera']['type']})
+            if sensor_config['robot_cameras']['motoman_camera']['active']:
+                xacro_args.update({'motoman_camera_active_arg': 'true'})
+                xacro_args.update({'motoman_camera_type_arg': sensor_config['robot_cameras'][f'motoman_camera']['type']})
+            if sensor_config['robot_cameras']['ur_camera']['active']:
+                xacro_args.update({'ur_camera_active_arg': 'true'})
+                xacro_args.update({'ur_camera_type_arg': sensor_config['robot_cameras']['ur_camera']['type']})
+        except KeyError:
+            rclpy.logging.get_logger('Launch File').error("Unable to parse sensor configuration")
+    
+    doc = xacro.process_file(urdf, mappings=xacro_args)
 
     robot_description_content = doc.toprettyxml(indent='  ')
     
