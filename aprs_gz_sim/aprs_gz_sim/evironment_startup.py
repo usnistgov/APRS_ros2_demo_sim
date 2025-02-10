@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
 from typing import Optional
+import yaml
 
 from std_msgs.msg import Bool as BoolMsg
 
@@ -125,7 +126,14 @@ class EnvironmentStartup(Node):
         
         self.spawn_part_client = self.create_client(SpawnPart, "/spawn_part")
         self.spawn_sensor_client = self.create_client(SpawnSensor, "/spawn_sensor")
-        
+
+    def read_yaml(self, path):
+        with open(path, "r") as stream:
+            try:
+                return yaml.safe_load(stream)
+            except yaml.YAMLError:
+                self.get_logger().error(bcolors.FAIL + "Unable to read configuration file" + bcolors.ENDC)
+                return {}   
 
     def get_advanced_logical_camera_xml(self, file_path, sensor_type, name = "camera_1"):
         
@@ -191,7 +199,7 @@ class EnvironmentStartup(Node):
 
         return ET.tostring(xml, encoding="unicode")
 
-    def get_rgb_camera_xml(self, file_path, sensor_type, name = "camera_1"):
+    def get_rgbd_camera_xml(self, file_path, sensor_type, name = "camera_1"):
         
         
         xml = ET.fromstring(self.get_sdf(file_path))
@@ -222,13 +230,13 @@ class EnvironmentStartup(Node):
 
         return ET.tostring(xml, encoding="unicode")
     
-    def spawn_sensors(self, name: str, sensor_type: str, xyz: list[str]):
+    def spawn_sensor(self, name: str, sensor_type: str, xyz: list[float], rpy: list[float]):
         
         new_sensor_pose = Pose()
         new_sensor_pose.position.x = float(xyz[0])
         new_sensor_pose.position.y = float(xyz[1])
         new_sensor_pose.position.z = float(xyz[2])
-        orientation = quaternion_from_euler(math.pi/2, -math.pi/2, 0.0)
+        orientation = quaternion_from_euler(*rpy)
         new_sensor_pose.orientation.x = float(orientation[0])
         new_sensor_pose.orientation.y = float(orientation[1])
         new_sensor_pose.orientation.z = float(orientation[2])
@@ -245,7 +253,7 @@ class EnvironmentStartup(Node):
         elif sensor_type == "rgb_camera":
             request.xml = self.get_rgb_camera_xml(file_path, sensor_type, name)
         elif sensor_type == "rgbd_camera":
-            request.xml = self.get_rgb_camera_xml(file_path, sensor_type, name)
+            request.xml = self.get_rgbd_camera_xml(file_path, sensor_type, name)
         
         future = self.spawn_sensor_client.call_async(request)
             
@@ -259,6 +267,22 @@ class EnvironmentStartup(Node):
 
         if not result.success:
             self.get_logger().error("Error calling spawn_sensor service")
+    
+    def spawn_sensors(self):
+        sensor_file = os.path.join(get_package_share_directory("aprs_gz_sim"), "config", "sensors.yaml")
+
+        sensor_config = self.read_yaml(sensor_file)
+
+        if "static_sensors" in sensor_config.keys():
+            static_sensors: dict[dict] = sensor_config["static_sensors"]
+
+            for sensor in static_sensors.keys():
+                name = sensor
+                sensor_type = static_sensors[sensor]["type"]
+                sensor_xyz = static_sensors[sensor]["pose"]["xyz"]
+                sensor_rpy = static_sensors[sensor]["pose"]["rpy"]
+
+                self.spawn_sensor(name, sensor_type, sensor_xyz, sensor_rpy)
     
     def get_sdf(self, file_path: str) -> str:
         try:

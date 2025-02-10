@@ -1,0 +1,12 @@
+static_sensors:
+  rgb_camera_one:
+    type: rgb_camera
+    pose:
+      xyz: [0.0, 0.0, 5.0]
+      rpy: [1.570796, -1.570796, 0.0]
+
+  rgb_camera_two:
+    type: rgb_camera
+    pose:
+      xyz: [1.0, 0.0, 3.0]
+      rpy: [1.570796, -1.570796, 0.0]
