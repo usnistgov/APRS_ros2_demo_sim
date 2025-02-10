@@ -223,7 +223,7 @@
 		</joint>
 
 		<joint name = "motoman_link_t_to_gripper" type = "fixed">
-			<origin xyz = "0 0.02 0" rpy = "-1.57 0 0"/>
+			<origin xyz = "0 0.02 0" rpy = "-1.57 1.57 0"/>
 			<parent link = "link_t"/>
 			<child link = "motoman_gripper_link"/>
 		</joint>
