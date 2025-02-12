@@ -28,6 +28,13 @@
         <mass value="0.102"/>
         <inertia ixx="0.0000647" ixy="0.0" ixz="0.0" iyy="0.0000647" iyz="0.0" izz="0.0001276"/>
       </inertial>
+
+      <sensor name='${prefix}_sensor_contact' type='contact'>
+        <contact>
+          <collision>"${prefix}_gripper_collision"</collision>
+        </contact>
+      </sensor>
+
     </link>
 
     <!-- Gripper Joint -->

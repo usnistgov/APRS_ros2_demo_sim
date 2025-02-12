@@ -26,8 +26,8 @@ def launch_setup(context, *args, **kwargs):
     static_controllers = []
     controller_switchers = []
 
-    robots=['fanuc', 'franka', 'motoman', 'ur']
-    # robots=["fanuc"]
+    # robots=['fanuc', 'franka', 'motoman', 'ur']
+    robots=["motoman"]
     sensor_file = os.path.join(get_package_share_directory("aprs_gz_sim"), "config", "sensors.yaml")
 
     sensor_config = read_yaml(sensor_file)
