@@ -22,11 +22,13 @@ set(msg_files
 )
 
 set(srv_files
+  "srv/DetatchLink.srv"
   "srv/SpawnPart.srv"
   "srv/SpawnSensor.srv"
   "srv/PickPart.srv"
   "srv/MoveCartesian.srv"
   "srv/MoveToPose.srv"
+  "srv/VacuumGripperControl.srv"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
