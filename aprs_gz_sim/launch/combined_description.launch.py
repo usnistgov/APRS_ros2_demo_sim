@@ -51,6 +51,7 @@ def launch_setup(context, *args, **kwargs):
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='both',
+        namespace="simulation",
         parameters=[
             {'use_sim_time': True}, 
             {'robot_description': robot_description_content}
@@ -62,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
         package='ros_gz_sim',
         executable='create',
         output='screen',
-        arguments=['-topic', 'robot_description',
+        arguments=['-topic', 'simulation/robot_description',
                 '-name', 'aprs_robots',
                 '-allow_renaming', 'true'],
     )
@@ -73,6 +74,7 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner',
         name='joint_state_broadcaster_spawner',
         arguments=['joint_state_broadcaster'],
+        namespace="simulation",
         parameters=[
             {'use_sim_time': True},
         ],
@@ -92,6 +94,7 @@ def launch_setup(context, *args, **kwargs):
         joint_trajectory_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
+            namespace="simulation",
             name=f'{robot}_joint_trajectory_controller_spawner',
             arguments=[
                 f'{robot}_joint_trajectory_controller', '--inactive'
@@ -103,6 +106,7 @@ def launch_setup(context, *args, **kwargs):
         static_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
+            namespace="simulation",
             name=f'{robot}_static_controller_spawner',
             arguments=[
                 f'{robot}_static_controller',

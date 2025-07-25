@@ -26,8 +26,8 @@ def launch_setup(context, *args, **kwargs):
     static_controllers = []
     controller_switchers = []
 
-    # robots=['fanuc', 'franka', 'motoman', 'ur']
-    robots=["ur"]
+    robots=['fanuc', 'franka', 'motoman', 'ur']
+    # robots=["ur"]
     sensor_file = os.path.join(get_package_share_directory("aprs_gz_sim"), "config", "sensors.yaml")
 
     sensor_config = read_yaml(sensor_file)
@@ -60,7 +60,7 @@ def launch_setup(context, *args, **kwargs):
             package='robot_state_publisher',
             executable='robot_state_publisher',
             output='both',
-            namespace=robot,
+            namespace=f"simulation/{robot}",
             # remappings=[
             #     ("joint_states", "/joint_states")
             # ],
@@ -76,7 +76,7 @@ def launch_setup(context, *args, **kwargs):
             output='screen',
             # name=f'{robot}_ros_gz_sim',
             arguments=[
-                    '-topic', f'{robot}/robot_description',        
+                    '-topic', f'simulation/{robot}/robot_description',        
                     '-name', f'aprs_{robot}',
                     '-allow_renaming', 'true']
         ))
@@ -86,7 +86,7 @@ def launch_setup(context, *args, **kwargs):
             package='controller_manager',
             executable='spawner',
             name='joint_state_broadcaster_spawner',
-            namespace=robot,
+            namespace=f"simulation/{robot}",
             arguments=[
                 'joint_state_broadcaster'
             ],
@@ -100,7 +100,7 @@ def launch_setup(context, *args, **kwargs):
             package='controller_manager',
             executable='spawner',
             name='controller_spawner',
-            namespace=robot,
+            namespace=f"simulation/{robot}",
             arguments=[
                 'joint_trajectory_controller', '--inactive'
             ],
@@ -113,7 +113,7 @@ def launch_setup(context, *args, **kwargs):
             package='controller_manager',
             executable='spawner',
             name=f'static_controller_spawner',
-            namespace=robot,
+            namespace=f"simulation/{robot}",
             arguments=[
                 'static_controller',
             ],
@@ -125,7 +125,7 @@ def launch_setup(context, *args, **kwargs):
         # robot switcher
         controller_switchers.append(Node(
             package='aprs_gz_sim',
-            namespace=robot,
+            namespace=f"simulation/{robot}",
             executable='seperate_controller_switcher_node.py',
             output='screen'
         ))

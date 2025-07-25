@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
+        namespace="simulation",
         parameters=[
             moveit_config.to_dict(),
             {"use_sim_time": True}

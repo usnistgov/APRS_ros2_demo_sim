@@ -32,7 +32,7 @@
   <gazebo>
     <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <ros>
-        <namespace>fanuc</namespace>
+        <namespace>simulation/fanuc</namespace>
       </ros>
       <parameters>$(arg fanuc_controller)</parameters>
       <!-- <controller_manager_name>fanuc_controller_manager</controller_manager_name> -->
