@@ -58,28 +58,6 @@
       </sensor>
     </gazebo>
 
-    <!-- ROS2 Control for the gripper joint -->
-    <!-- <ros2_control name="${prefix}_gripper_control" type="system">
-      <hardware>
-        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-      </hardware>
-      <joint name="${prefix}_gripper_joint">
-        <state_interface name="position">
-          <param name="initial_value">0</param>
-        </state_interface>
-      </joint>
-    </ros2_control> -->
-
-    <!-- Vacuum gripper plugin
-    <gazebo>
-      <plugin filename="libVacuumGripperPlugin.so" name="${prefix}_vacuum_gripper_plugin">
-        <ros>
-        </ros>
-        <gripper_link>${prefix}_gripper</gripper_link>
-        <robot_name>${prefix}_robot</robot_name>
-      </plugin>
-    </gazebo> -->
-
     <!-- Camera -->
     <xacro:if value="${use_camera}">
       <!-- Mount Link -->

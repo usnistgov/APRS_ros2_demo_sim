@@ -10,9 +10,8 @@
   </joint>
 
   <xacro:include filename="$(find aprs_description)/urdf/franka/aprs_franka_macro.xacro"/>
-    <!-- ROS2 Control Plugin -->
+
   <xacro:arg name="franka_controller" default="$(find aprs_description)/config/robot_controllers.yaml" />
-  <!-- <xacro:arg name="controllers" default="$(find aprs_description)/config/ns_robot_controllers.yaml" /> -->
 
   <xacro:aprs_franka></xacro:aprs_franka>
 
@@ -22,9 +21,7 @@
         <namespace>simulation/franka</namespace>
       </ros>
       <parameters>$(arg franka_controller)</parameters>
-      <!-- <controller_manager_name>franka_controller_manager</controller_manager_name> -->
       <robot_param>robot_description</robot_param>
-      <!-- <robot_param_node>/franka/robot_state_publisher</robot_param_node> -->
     </plugin>
   </gazebo>
 

@@ -69,16 +69,16 @@ def launch_setup(context, *args, **kwargs):
     )
     
     # Joint state broadcaster
-    joint_state_broadcaster = Node(
-        package='controller_manager',
-        executable='spawner',
-        name='joint_state_broadcaster_spawner',
-        arguments=['joint_state_broadcaster'],
-        namespace="simulation",
-        parameters=[
-            {'use_sim_time': True},
-        ],
-    )
+    # joint_state_broadcaster = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     name='joint_state_broadcaster_spawner',
+    #     arguments=['joint_state_broadcaster'],
+    #     namespace="simulation",
+    #     parameters=[
+    #         {'use_sim_time': True},
+    #     ],
+    # )
     
     # robot switcher
     controller_switcher = Node(
@@ -89,40 +89,25 @@ def launch_setup(context, *args, **kwargs):
     
     #Joint trajectory controllers
     joint_trajectory_controllers = []
-    static_controllers = []
-    for robot in ['fanuc', 'franka', 'motoman', 'ur']:
-        joint_trajectory_controllers.append(Node(
-            package='controller_manager',
-            executable='spawner',
-            namespace="simulation",
-            name=f'{robot}_joint_trajectory_controller_spawner',
-            arguments=[
-                f'{robot}_joint_trajectory_controller', '--inactive'
-            ],
-            parameters=[
-                {'use_sim_time': True},
-            ],
-        ))
-        static_controllers.append(Node(
-            package='controller_manager',
-            executable='spawner',
-            namespace="simulation",
-            name=f'{robot}_static_controller_spawner',
-            arguments=[
-                f'{robot}_static_controller',
-            ],
-            parameters=[
-                {'use_sim_time': True},
-            ],
-        ))
+    # for robot in ['fanuc', 'franka', 'motoman', 'ur']:
+    #     joint_trajectory_controllers.append(Node(
+    #         package='controller_manager',
+    #         executable='spawner',
+    #         namespace="simulation",
+    #         name=f'{robot}_joint_trajectory_controller_spawner',
+    #         arguments=[
+    #             f'{robot}_joint_trajectory_controller', '--inactive'
+    #         ],
+    #         parameters=[
+    #             {'use_sim_time': True},
+    #         ],
+    #     ))
 
     nodes_to_start = [
         robot_state_publisher_node,
         gz_spawn_robot,
-        joint_state_broadcaster,
+        comined,
         controller_switcher,
-        *joint_trajectory_controllers,
-        *static_controllers
     ]
 
     return nodes_to_start

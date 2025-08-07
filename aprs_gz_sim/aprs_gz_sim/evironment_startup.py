@@ -142,28 +142,28 @@ class EnvironmentStartup(Node):
         
         # xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
                 
-        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic"
+        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic" #type: ignore
                 
-        xml.find("model").find("link").find("sensor").find("plugin").find("rostopic").text = f"{name}_ros_topic"
-        xml.find("model").find("link").find("sensor").find("plugin").find("gztopic").text = f"{name}_gz_topic"
-        xml.find("model").find("link").find("sensor").find("plugin").find("camera_name").text = name
-        xml.find("model").find("link").find("sensor").find("plugin").find("frame_name").text = f"{name}_gz_topic"  
+        xml.find("model").find("link").find("sensor").find("plugin").find("rostopic").text = f"{name}_ros_topic" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("gztopic").text = f"{name}_gz_topic" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("camera_name").text = name #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("frame_name").text = f"{name}_gz_topic"   #type: ignore
         
         ray_sensors = ["break_beam", "proximity", "laser_profiler", "lidar"]
         if sensor_type in ray_sensors:
-            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+            plugin = xml.find('model').find('link').find('sensor').find('plugin') #type: ignore
 
             # plugin.set('name', str(name + "_ros_plugin"))
-            plugin.find('sensor_name').text = name
-            plugin.find('frame_name').text = name + "_frame"
+            plugin.find('sensor_name').text = name #type: ignore
+            plugin.find('frame_name').text = name + "_frame" #type: ignore
         
         cameras = ['rgb_camera', 'rgbd_camera', 'basic_logical_camera', 'advanced_logical_camera']
         if sensor_type in cameras:
-            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+            plugin = xml.find('model').find('link').find('sensor').find('plugin') #type: ignore
 
             # plugin.set('name', str(name + "_ros_plugin"))
-            plugin.find('camera_name').text = name
-            plugin.find('frame_name').text = name + "_frame"
+            plugin.find('camera_name').text = name #type: ignore
+            plugin.find('frame_name').text = name + "_frame" #type: ignore
 
         return ET.tostring(xml, encoding="unicode")
 
@@ -174,28 +174,28 @@ class EnvironmentStartup(Node):
         
         # xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
                 
-        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic"
+        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic" #type: ignore
                 
-        xml.find("model").find("link").find("sensor").find("plugin").find("rgb_img_ros_topic").text = f"/ariac/sensors/{name}/rgb_image"
-        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_ros_topic").text = f"/ariac/sensors/{name}/camera_info"
-        xml.find("model").find("link").find("sensor").find("plugin").find("gz_topic").text = f"{name}_gz_topic"
-        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_gz_topic").text = f"{name}_gz_topic_info"
-        xml.find("model").find("link").find("sensor").find("plugin").find("camera_name").text = name
+        xml.find("model").find("link").find("sensor").find("plugin").find("rgb_img_ros_topic").text = f"/ariac/sensors/{name}/rgb_image" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_ros_topic").text = f"/ariac/sensors/{name}/camera_info" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("gz_topic").text = f"{name}_gz_topic" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_gz_topic").text = f"{name}_gz_topic_info" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("camera_name").text = name #type: ignore
         
         ray_sensors = ["break_beam", "proximity", "laser_profiler", "lidar"]
         if sensor_type in ray_sensors:
-            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+            plugin = xml.find('model').find('link').find('sensor').find('plugin') #type: ignore
 
             # plugin.set('name', str(name + "_ros_plugin"))
-            plugin.find('sensor_name').text = name
-            plugin.find('frame_name').text = name + "_frame"
+            plugin.find('sensor_name').text = name #type: ignore
+            plugin.find('frame_name').text = name + "_frame" #type: ignore
         
         cameras = ['rgb_camera', 'rgbd_camera', 'basic_logical_camera', 'advanced_logical_camera']
         if sensor_type in cameras:
-            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+            plugin = xml.find('model').find('link').find('sensor').find('plugin') #type: ignore
 
             # plugin.set('name', str(name + "_ros_plugin"))
-            plugin.find('camera_name').text = name
+            plugin.find('camera_name').text = name #type: ignore
 
         return ET.tostring(xml, encoding="unicode")
 
@@ -206,27 +206,27 @@ class EnvironmentStartup(Node):
         
         # xml.find('model').find('link').find('sensor').find('visualize').text = str(False)
                 
-        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic"
+        xml.find("model").find("link").find("sensor").find("topic").text = f"{name}_gz_topic" #type: ignore
                 
-        xml.find("model").find("link").find("sensor").find("plugin").find("rgb_img_ros_topic").text = f"/ariac/sensors/{name}/rgb_image"
-        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_ros_topic").text = f"/ariac/sensors/{name}/camera_info"
-        xml.find("model").find("link").find("sensor").find("plugin").find("gz_topic").text = f"{name}_gz_topic"
-        xml.find("model").find("link").find("sensor").find("plugin").find("depth_img_ros_topic").text = f"/ariac/sensors/{name}/depth_image"
+        xml.find("model").find("link").find("sensor").find("plugin").find("rgb_img_ros_topic").text = f"/ariac/sensors/{name}/rgb_image" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("cam_info_ros_topic").text = f"/ariac/sensors/{name}/camera_info" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("gz_topic").text = f"{name}_gz_topic" #type: ignore
+        xml.find("model").find("link").find("sensor").find("plugin").find("depth_img_ros_topic").text = f"/ariac/sensors/{name}/depth_image" #type: ignore
         
         ray_sensors = ["break_beam", "proximity", "laser_profiler", "lidar"]
         if sensor_type in ray_sensors:
-            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+            plugin = xml.find('model').find('link').find('sensor').find('plugin') #type: ignore
 
             # plugin.set('name', str(name + "_ros_plugin"))
-            plugin.find('sensor_name').text = name
-            plugin.find('frame_name').text = name + "_frame"
+            plugin.find('sensor_name').text = name #type: ignore
+            plugin.find('frame_name').text = name + "_frame" #type: ignore
         
         cameras = ['rgb_camera', 'rgbd_camera', 'basic_logical_camera', 'advanced_logical_camera']
         if sensor_type in cameras:
-            plugin = xml.find('model').find('link').find('sensor').find('plugin')
+            plugin = xml.find('model').find('link').find('sensor').find('plugin') #type: ignore
 
             # plugin.set('name', str(name + "_ros_plugin"))
-            plugin.find('camera_name').text = name
+            plugin.find('camera_name').text = name #type: ignore
 
         return ET.tostring(xml, encoding="unicode")
     
@@ -274,7 +274,7 @@ class EnvironmentStartup(Node):
         sensor_config = self.read_yaml(sensor_file)
 
         if "static_sensors" in sensor_config.keys():
-            static_sensors: dict[dict] = sensor_config["static_sensors"]
+            static_sensors: dict[str, dict] = sensor_config["static_sensors"]
 
             for sensor in static_sensors.keys():
                 name = sensor
