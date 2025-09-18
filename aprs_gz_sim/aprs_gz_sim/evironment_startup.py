@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
-from typing import Optional
+from typing import Optional, cast
 import yaml
 
 from std_msgs.msg import Bool as BoolMsg
@@ -263,9 +263,9 @@ class EnvironmentStartup(Node):
             raise Error("Timeout reached when calling spawn_sensor service")
 
         result: SpawnSensor.Response
-        result = future.result()
+        response = cast(SpawnSensor.Response, future.result())
 
-        if not result.success:
+        if not response.success:
             self.get_logger().error("Error calling spawn_sensor service")
     
     def spawn_sensors(self):
@@ -300,10 +300,10 @@ class EnvironmentStartup(Node):
         r, g, b = self.colors[p_color]
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
-        for elem in xml.find('model').find('link').findall('visual'):
+        for elem in xml.find('model').find('link').findall('visual'): # type: ignore
             if elem.attrib['name'] == "base":
-                elem.find("material").find("ambient").text = color_string
-                elem.find("material").find("diffuse").text = color_string
+                elem.find("material").find("ambient").text = color_string # type: ignore
+                elem.find("material").find("diffuse").text = color_string # type: ignore
 
         return ET.tostring(xml, encoding="unicode")
     
@@ -335,10 +335,9 @@ class EnvironmentStartup(Node):
         if not future.done():
             raise Error("Timeout reached when calling spawn_part service")
 
-        result: SpawnPart.Response
-        result = future.result()
+        response = cast(SpawnPart.Response, future.result())
 
-        if not result.success:
+        if not response.success:
             self.get_logger().error("Error calling spawn_part service")
             
     def get_gear_xml(self, gear_size, color):
@@ -349,10 +348,10 @@ class EnvironmentStartup(Node):
         r, g, b = self.colors[color]
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
-        for elem in xml.find('model').find('link').findall('visual'):
+        for elem in xml.find('model').find('link').findall('visual'): # type: ignore
             if elem.attrib['name'] == gear_size:
-                elem.find("material").find("ambient").text = color_string
-                elem.find("material").find("diffuse").text = color_string
+                elem.find("material").find("ambient").text = color_string # type: ignore
+                elem.find("material").find("diffuse").text = color_string # type: ignore
 
         return ET.tostring(xml, encoding="unicode")
     
@@ -393,10 +392,9 @@ class EnvironmentStartup(Node):
         if not future.done():
             raise Error("Timeout reached when calling spawn_part service")
 
-        result: SpawnPart.Response
-        result = future.result()
+        response = cast(SpawnPart.Response, future.result())
 
-        if not result.success:
+        if not response.success:
             self.get_logger().error("Error calling spawn_part service")
 
         else:
@@ -411,10 +409,10 @@ class EnvironmentStartup(Node):
         r, g, b = self.colors[color]
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
-        for elem in xml.find('model').find('link').findall('visual'):
+        for elem in xml.find('model').find('link').findall('visual'): # type: ignore
             if elem.attrib['name'] == tray_name:
-                elem.find("material").find("ambient").text = color_string
-                elem.find("material").find("diffuse").text = color_string
+                elem.find("material").find("ambient").text = color_string # type: ignore
+                elem.find("material").find("diffuse").text = color_string # type: ignore
 
         return ET.tostring(xml, encoding="unicode")
     
@@ -452,10 +450,9 @@ class EnvironmentStartup(Node):
         if not future.done():
             raise Error("Timeout reached when calling spawn_part service")
 
-        result: SpawnPart.Response
-        result = future.result()
+        response = cast(SpawnPart.Response, future.result())
 
-        if not result.success:
+        if not response.success:
             self.get_logger().error("Error calling spawn_part service")
 
         else:

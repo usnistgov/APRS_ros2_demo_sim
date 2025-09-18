@@ -97,7 +97,7 @@ class RobotControllerSwitcher(Node):
 
                     rclpy.spin_until_future_complete(self, future)
 
-                    if not future.result().ok:
+                    if not future.result().ok: # type: ignore
                         self.get_logger().error("Could not switch controllers")
                 
                 self.recieved_msg = False

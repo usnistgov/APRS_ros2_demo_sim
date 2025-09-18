@@ -40,12 +40,11 @@ class CloneNode(Node):
         motoman_trays_info_sub = self.create_subscription(Trays, '/motoman/table_trays_info', self.update_motoman_trays, 10)
         teach_trays_info_sub = self.create_subscription(Trays, '/teach/table_trays_info', self.update_teach_trays, 10)
         
-        
-    
     def update_motoman_trays(self, msg: Trays):
         if self.motoman_trays_spawned:
             return
-        all_trays: list[Tray] = msg.kit_trays + msg.part_trays
+        
+        all_trays: list[Tray] = msg.kit_trays + msg.part_trays # type: ignore
         
         for tray in all_trays:
             world_pose = multiply_pose(self.motoman_vision_pose_, tray.tray_pose.pose)
@@ -72,7 +71,8 @@ class CloneNode(Node):
     def update_fanuc_trays(self, msg: Trays):
         if self.fanuc_trays_spawned:
             return
-        all_trays: list[Tray] = msg.kit_trays + msg.part_trays
+        
+        all_trays: list[Tray] = msg.kit_trays + msg.part_trays # type: ignore
         
         for tray in all_trays:
             world_pose = multiply_pose(self.fanuc_vision_pose_, tray.tray_pose.pose)
@@ -99,7 +99,8 @@ class CloneNode(Node):
     def update_teach_trays(self, msg: Trays):
         if self.teach_trays_spawned:
             return
-        all_trays: list[Tray] = msg.kit_trays + msg.part_trays
+        
+        all_trays: list[Tray] = msg.kit_trays + msg.part_trays # type: ignore
         
         for tray in all_trays:
             world_pose = multiply_pose(self.teach_vision_pose_, tray.tray_pose.pose)
@@ -131,4 +132,7 @@ if __name__ == "__main__":
     try:
         rclpy.spin(clone_node)
     except KeyboardInterrupt:
+        clone_node.get_logger().info('KeyboardInterrupt caught, shutting down')
+    finally:
         clone_node.destroy_node()
+        rclpy.shutdown()

@@ -1,11 +1,14 @@
 import rclpy
+
+from random import randint
+
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 class MirrorRobot(Node):
     def __init__(self):
-        super().__init__('digital_twin')
+        super().__init__(f'mirror_robot_node_{randint(0, 100000)}')
         self.declare_parameter('robot_name', 'fanuc')
         self.robot_name = self.get_parameter('robot_name').value
 
@@ -16,7 +19,7 @@ class MirrorRobot(Node):
             10)
 
         self.simulated_robot_joint_traj_pub = self.create_publisher(
-            JointState,
+            JointTrajectory,
             f'/simulation/{self.robot_name}/joint_trajectory_controller/joint_trajectory',
             10)
 
