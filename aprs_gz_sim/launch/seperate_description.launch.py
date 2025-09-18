@@ -2,13 +2,16 @@ import os
 import yaml
 import xacro
 import rclpy.logging
+
 from launch import LaunchDescription
+from launch.substitutions import LaunchConfiguration
 from launch.actions import (
+    DeclareLaunchArgument,
     OpaqueFunction,
 )
 from launch_ros.actions import Node
 
-from ament_index_python.packages import get_package_share_directory, PackageNotFoundError
+from ament_index_python.packages import get_package_share_directory
 
 def read_yaml(path):
     with open(path, "r") as stream:
@@ -19,12 +22,15 @@ def read_yaml(path):
             return {}  
 
 def launch_setup(context, *args, **kwargs):
+    mirror_env = LaunchConfiguration("mirror_env").perform(context)
+    
     robot_state_publishers = []
     robot_spawners = []
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
     static_controllers = []
     controller_switchers = []
+    mirror_nodes = []
 
     robots=['fanuc', 'franka', 'motoman', 'ur']
     # robots=["ur"]
@@ -95,7 +101,7 @@ def launch_setup(context, *args, **kwargs):
             ],
         ))
         
-        #Joint trajectory controllers    
+        #Joint trajectory controllers
         joint_trajectory_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
@@ -130,13 +136,21 @@ def launch_setup(context, *args, **kwargs):
             output='screen'
         ))
 
+        if mirror_env:
+            mirror_nodes.append(Node(
+                package='aprs_gz_sim',
+                executable='mirror_robot.py',
+                parameters=[{'robot_name': robot}],
+            ))
+
     nodes_to_start = [
         *robot_state_publishers,
         *robot_spawners,
         *joint_state_broadcasters,
         *static_controllers,
         *joint_trajectory_controllers,
-        *controller_switchers
+        *controller_switchers,
+        *mirror_nodes
     ]
 
     return nodes_to_start
@@ -144,5 +158,9 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     declared_arguments = []
+
+    declared_arguments.append(
+        DeclareLaunchArgument("mirror_env", default_value="false", description="Whether or not to mirror real robots")
+    )
 
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])

@@ -17,6 +17,7 @@ def launch_setup(context, *args, **kwargs):
     world_path = os.path.join(get_package_share_directory('aprs_gz_sim'), 'worlds', 'lab.sdf')
     
     use_seperate_descriptions = LaunchConfiguration("use_seperate_descriptions")
+    mirror_env = LaunchConfiguration("mirror_env")
     
     gz = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -47,7 +48,10 @@ def launch_setup(context, *args, **kwargs):
         PythonLaunchDescriptionSource(
             [os.path.join(get_package_share_directory('aprs_gz_sim'),'launch', 'seperate_description.launch.py')]
         ),
-        condition=IfCondition(use_seperate_descriptions)
+        condition=IfCondition(use_seperate_descriptions),
+        launch_arguments=[
+            ("mirror_env", mirror_env)
+        ]
     )
 
     bridge_params = os.path.join(get_package_share_directory("aprs_gz_sim"),'config','gz_bridge.yaml')
@@ -75,6 +79,10 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument("use_seperate_descriptions", default_value="false", description="use seperate robot descriptions")
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument("mirror_env", default_value="false", description="Whether or not to mirror real robots")
     )
 
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
