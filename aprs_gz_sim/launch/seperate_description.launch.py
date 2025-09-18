@@ -108,33 +108,33 @@ def launch_setup(context, *args, **kwargs):
             name='controller_spawner',
             namespace=f"simulation/{robot}",
             arguments=[
-                'joint_trajectory_controller', '--inactive'
+                'joint_trajectory_controller'
             ],
             parameters=[
                 {'use_sim_time': True},
             ],
         ))
         
-        static_controllers.append(Node(
-            package='controller_manager',
-            executable='spawner',
-            name=f'static_controller_spawner',
-            namespace=f"simulation/{robot}",
-            arguments=[
-                'static_controller',
-            ],
-            parameters=[
-                {'use_sim_time': True},
-            ],
-        ))
+        # static_controllers.append(Node(
+        #     package='controller_manager',
+        #     executable='spawner',
+        #     name=f'static_controller_spawner',
+        #     namespace=f"simulation/{robot}",
+        #     arguments=[
+        #         'static_controller',
+        #     ],
+        #     parameters=[
+        #         {'use_sim_time': True},
+        #     ],
+        # ))
         
         # robot switcher
-        controller_switchers.append(Node(
-            package='aprs_gz_sim',
-            namespace=f"simulation/{robot}",
-            executable='seperate_controller_switcher_node.py',
-            output='screen'
-        ))
+        # controller_switchers.append(Node(
+        #     package='aprs_gz_sim',
+        #     namespace=f"simulation/{robot}",
+        #     executable='seperate_controller_switcher_node.py',
+        #     output='screen'
+        # ))
 
         if mirror_env:
             mirror_nodes.append(Node(

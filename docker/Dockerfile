@@ -26,7 +26,6 @@ RUN source /opt/ros/jazzy/setup.bash && \
     sudo apt-get update -qq && \
     sudo apt-get -y install gz-harmonic && \
     git clone https://github.com/ros-controls/gz_ros2_control.git src/gz_pkgs/gz_ros2_control -b jazzy && \
-    git clone https://github.com/jfernandez37/Universal_Robots_ROS2_Description.git src/gz_pkgs/ur_description -b ros2 && \
     git clone https://github.com/usnistgov/APRS_ros2_demo_sim.git src/APRS_ros2_demo_sim -b jazzy && \
     git clone https://github.com/jfernandez37/ariac_gz_plugins.git src/ariac_gz_plugins -b jazzy && \
     git clone https://github.com/usnistgov/aprs-ros-conveyor.git src/aprs_ros_conveyor -b main && \
@@ -36,4 +35,4 @@ RUN source /opt/ros/jazzy/setup.bash && \
     colcon build
 
 RUN echo 'source /home/user_name/aprs_ws/install/setup.bash' >> /home/user_name/.bashrc
-RUN echo 'export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/user_name/aprs_ws/install/ur_description/share/:/home/user_name/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/' >> /home/user_name/.bashrc
+RUN echo 'export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/user_name/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/' >> /home/user_name/.bashrc

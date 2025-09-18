@@ -28,7 +28,7 @@ class SpawnParams:
     
     def set_xml_from_file_path(self):
         try:
-            f = open(self.file_path, 'r')
+            f = open(self.file_path, 'r') # type: ignore
             self.xml = f.read()
         except IOError:
             return
@@ -64,15 +64,18 @@ class PartSpawnParams(SpawnParams):
         self.modify_xml()
     
     def modify_xml(self):
+        if self.file_path is None:
+            return
+        
         xml = ET.fromstring(self.get_sdf(self.file_path))
 
         r, g, b = self.colors[self.color]
         color_string = str(r/255) + " " + str(g/255) + " " + str(b/255) + " 1" 
 
-        for elem in xml.find('model').find('link').findall('visual'):
+        for elem in xml.find('model').find('link').findall('visual'): # type: ignore
             if elem.attrib['name'] == "base":
-                elem.find("material").find("ambient").text = color_string
-                elem.find("material").find("diffuse").text = color_string
+                elem.find("material").find("ambient").text = color_string # type: ignore
+                elem.find("material").find("diffuse").text = color_string # type: ignore
 
         self.xml = ET.tostring(xml, encoding="unicode")
 
@@ -89,11 +92,14 @@ class TraySpawnParams(SpawnParams):
         self.modify_xml()
     
     def modify_xml(self):
+        if self.file_path is None:
+            return
+        
         xml = ET.fromstring(self.get_sdf(self.file_path))
 
         marker_string = "model://kit_tray/meshes/markers/marker_" + self.marker_id + ".dae"
-        for elem in xml.find('model').find('link').findall('visual'):
+        for elem in xml.find('model').find('link').findall('visual'): # type: ignore
             if elem.attrib['name'] == "marker":
-                elem.find("geometry").find("mesh").find("uri").text = marker_string
+                elem.find("geometry").find("mesh").find("uri").text = marker_string # type: ignore
 
         self.xml =  ET.tostring(xml, encoding="unicode")
