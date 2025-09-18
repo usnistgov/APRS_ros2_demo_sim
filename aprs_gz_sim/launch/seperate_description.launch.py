@@ -136,7 +136,7 @@ def launch_setup(context, *args, **kwargs):
         #     output='screen'
         # ))
 
-        if mirror_env:
+        if mirror_env.lower() != "false":
             mirror_nodes.append(Node(
                 package='aprs_gz_sim',
                 executable='mirror_robot.py',

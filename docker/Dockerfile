@@ -32,7 +32,9 @@ RUN source /opt/ros/jazzy/setup.bash && \
     git clone https://github.com/jfernandez37/moveit_test src/moveit_test -b individual_moveit_configs && \
     rosdep update && \
     rosdep install --from-paths src --ignore-src -y -r && \
+    source /opt/ros/jazzy/setup.bash && \
     colcon build
 
 RUN echo 'source /home/user_name/aprs_ws/install/setup.bash' >> /home/user_name/.bashrc
-RUN echo 'export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/user_name/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/' >> /home/user_name/.bashrc
+RUN echo 'source /opt/ros/jazzy/setup.bash' >> /home/user_name/.bashrc
+RUN echo 'export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/user_name/aprs_ws/install/aprs_gz_sim/share/aprs_gz_sim/models/:/opt/ros/jazzy/share' >> /home/user_name/.bashrc
