@@ -20,7 +20,7 @@ ENV GZ_VERSION=harmonic
 
 RUN source /opt/ros/jazzy/setup.bash && \
     sudo apt-get update -qq && \
-    sudo apt-get install lsb-release gnupg python3-pip python3-setuptools wget -y && \
+    sudo apt-get install lsb-release gnupg python3-pip python3-setuptools wget ros-jazzy-ur-description ros-jazzy-gz-ros2-control -y && \
     sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
     sudo apt-get update -qq && \
