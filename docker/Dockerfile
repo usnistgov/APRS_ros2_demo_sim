@@ -14,7 +14,6 @@ RUN mkdir -p /home/user_name/aprs-ws/src/gz_pkgs
 
 WORKDIR /home/user_name/aprs_ws
 
-ENV GZ_SIM_RESOURCE_PATH=/home/user_name/aprs_ws/install/ur_description/share/
 ENV GZ_SIM_SYSTEM_PLUGIN_PATH=/home/user_name/aprs_ws/install/gz_ros2_control/lib/
 ENV GZ_VERSION=harmonic
 

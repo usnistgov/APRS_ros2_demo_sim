@@ -183,10 +183,13 @@ simulation/fanuc:
       static_controller:
         type: aprs_controllers/StaticController
 
+      passthrough_controller:
+        type: passthrough_controller/PassthroughController
+
       joint_trajectory_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-  static_controller:
+  passthrough_controller:
     ros__parameters:
       joints:
         - joint_1
@@ -194,7 +197,9 @@ simulation/fanuc:
         - joint_3      
         - joint_4
         - joint_5
-        - joint_6  
+        - joint_6
+
+      real_robot_joint_states_topic: "/fanuc/joint_states"
   
   joint_trajectory_controller:
     ros__parameters:
@@ -231,13 +236,13 @@ simulation/franka:
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
-      static_controller:
-        type: aprs_controllers/StaticController
+      passthrough_controller:
+        type: passthrough_controller/PassthroughController
 
       joint_trajectory_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-  static_controller:
+  passthrough_controller:
     ros__parameters:
       joints:
         - fr3_joint1
@@ -247,6 +252,8 @@ simulation/franka:
         - fr3_joint5
         - fr3_joint6
         - fr3_joint7
+
+      real_robot_joint_states_topic: "/franka/joint_states"
   
   joint_trajectory_controller:
     ros__parameters:
@@ -275,13 +282,13 @@ simulation/motoman:
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
-      static_controller:
-        type: aprs_controllers/StaticController
+      passthrough_controller:
+        type: passthrough_controller/PassthroughController
 
       joint_trajectory_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-  static_controller:
+  passthrough_controller:
     ros__parameters:
       joints:
         - joint_b
@@ -291,6 +298,8 @@ simulation/motoman:
         - joint_s
         - joint_t
         - joint_u
+
+      real_robot_joint_states_topic: "/motoman/joint_states"
         
   joint_trajectory_controller:
     ros__parameters:
@@ -319,13 +328,13 @@ simulation/ur:
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
-      static_controller:
-        type: aprs_controllers/StaticController
+      passthrough_controller:
+        type: passthrough_controller/PassthroughController
 
       joint_trajectory_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-  static_controller:
+  passthrough_controller:
     ros__parameters:
       joints:
         - shoulder_pan_joint
@@ -334,6 +343,8 @@ simulation/ur:
         - wrist_1_joint
         - wrist_2_joint
         - wrist_3_joint
+
+      real_robot_joint_states_topic: "/ur/joint_states"
   
   joint_trajectory_controller:
     ros__parameters:

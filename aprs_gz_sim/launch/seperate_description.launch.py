@@ -28,7 +28,7 @@ def launch_setup(context, *args, **kwargs):
     robot_spawners = []
     joint_state_broadcasters = []
     joint_trajectory_controllers = []
-    static_controllers = []
+    passthrough_controllers = []
     controller_switchers = []
     mirror_nodes = []
 
@@ -115,18 +115,18 @@ def launch_setup(context, *args, **kwargs):
             ],
         ))
         
-        # static_controllers.append(Node(
-        #     package='controller_manager',
-        #     executable='spawner',
-        #     name=f'static_controller_spawner',
-        #     namespace=f"simulation/{robot}",
-        #     arguments=[
-        #         'static_controller',
-        #     ],
-        #     parameters=[
-        #         {'use_sim_time': True},
-        #     ],
-        # ))
+        if mirror_env and robot in ["fanuc", "motoman"]:
+            passthrough_controllers.append(Node(
+                package='controller_manager',
+                executable='spawner',
+                namespace=f"simulation/{robot}",
+                arguments=[
+                    'passthrough_controller',
+                ],
+                parameters=[
+                    {'use_sim_time': True},
+                ],
+            ))
         
         # robot switcher
         # controller_switchers.append(Node(
@@ -136,18 +136,18 @@ def launch_setup(context, *args, **kwargs):
         #     output='screen'
         # ))
 
-        if mirror_env.lower() != "false":
-            mirror_nodes.append(Node(
-                package='aprs_gz_sim',
-                executable='mirror_robot.py',
-                parameters=[{'robot_name': robot}],
-            ))
+        # if mirror_env.lower() != "false":
+        #     mirror_nodes.append(Node(
+        #         package='aprs_gz_sim',
+        #         executable='mirror_robot.py',
+        #         parameters=[{'robot_name': robot}],
+        #     ))
 
     nodes_to_start = [
         *robot_state_publishers,
         *robot_spawners,
         *joint_state_broadcasters,
-        *static_controllers,
+        *passthrough_controllers,
         *joint_trajectory_controllers,
         *controller_switchers,
         *mirror_nodes
