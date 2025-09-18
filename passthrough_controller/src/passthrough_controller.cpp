@@ -36,7 +36,7 @@ controller_interface::CallbackReturn PassthroughController::on_configure(
   real_robot_joint_states_topic_ = get_node()->get_parameter("real_robot_joint_states_topic").as_string();
 
   if (joint_names_.empty()) {
-    RCLCPP_ERROR(get_node()->get_logger(), "No joints specified in 'joints' parameter");
+    RCLCPP_ERROR_STREAM(get_node()->get_logger(), "No joints specified in 'joints' parameter. Got topic: " << real_robot_joint_states_topic_);
     return controller_interface::CallbackReturn::ERROR;
   }
 

@@ -5,63 +5,55 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+  rclcpp
+  rclcpp_action
+  hardware_interface
+  controller_interface
+  pluginlib
+  generate_parameter_library
+)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(controller_interface REQUIRED)
-find_package(hardware_interface REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
-find_package(realtime_tools REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(pluginlib REQUIRED)
 
-# Add library
-add_library(${PROJECT_NAME} SHARED
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
+
+generate_parameter_library(
+  passthrough_controller_parameters # cmake target name for the parameter library
+  src/passthrough_controller_parameters.yaml # path to input yaml file
+)
+
+# Build gripper controller
+add_library(passthrough_controller SHARED
   src/passthrough_controller.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+target_include_directories(passthrough_controller PUBLIC
+  include
 )
 
-ament_target_dependencies(${PROJECT_NAME}
-  controller_interface
-  hardware_interface
-  rclcpp
-  rclcpp_lifecycle
-  realtime_tools
-  sensor_msgs
-  pluginlib
+target_link_libraries(passthrough_controller PUBLIC
+passthrough_controller_parameters
 )
 
-# Causes the visibility macros to use dllexport rather than dllimport,
-# which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "PASSTHROUGH_CONTROLLER_BUILDING_DLL")
+ament_target_dependencies(passthrough_controller PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
-# Install
+pluginlib_export_plugin_description_file(controller_interface passthrough_controller.xml)
+
+install(
+  TARGETS
+    passthrough_controller
+    passthrough_controller_parameters
+  DESTINATION lib
+)
+
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/
 )
 
-install(TARGETS ${PROJECT_NAME}
-  EXPORT export_${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
-
-# Install plugin description file
-install(FILES passthrough_controller_plugin.xml
-  DESTINATION share/${PROJECT_NAME}
-)
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
-ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
-ament_export_dependencies(${THIS_PACKAGE_DEPENDS})
+ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 ament_package()

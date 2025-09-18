@@ -63,6 +63,7 @@ install(PROGRAMS
   nodes/combined_load_controllers.py
   nodes/seperate_load_controllers.py
   nodes/clone_real_world_node.py
+  nodes/dummy_motoman_joints_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

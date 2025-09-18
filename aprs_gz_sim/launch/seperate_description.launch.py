@@ -22,7 +22,7 @@ def read_yaml(path):
             return {}  
 
 def launch_setup(context, *args, **kwargs):
-    mirror_env = LaunchConfiguration("mirror_env").perform(context)
+    mirror_env = LaunchConfiguration("mirror_env").perform(context).lower() == "true"
     
     robot_state_publishers = []
     robot_spawners = []
@@ -33,7 +33,7 @@ def launch_setup(context, *args, **kwargs):
     mirror_nodes = []
 
     robots=['fanuc', 'franka', 'motoman', 'ur']
-    # robots=["ur"]
+    robots=["motoman"]
     sensor_file = os.path.join(get_package_share_directory("aprs_gz_sim"), "config", "sensors.yaml")
 
     sensor_config = read_yaml(sensor_file)
@@ -102,14 +102,17 @@ def launch_setup(context, *args, **kwargs):
         ))
         
         #Joint trajectory controllers
+        jt_controller_name = f'{robot}_joint_trajectory_controller'
+        jt_arguments = [jt_controller_name]
+        if mirror_env and robot in ["fanuc", "motoman"]:
+            jt_arguments.append('--inactive')
+
         joint_trajectory_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
             name='controller_spawner',
             namespace=f"simulation/{robot}",
-            arguments=[
-                'joint_trajectory_controller'
-            ],
+            arguments=jt_arguments,
             parameters=[
                 {'use_sim_time': True},
             ],
