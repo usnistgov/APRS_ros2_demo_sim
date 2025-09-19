@@ -294,7 +294,7 @@ class EnvironmentStartup(Node):
         return entity_xml
     
     def get_part_xml(self, p_type, p_color):
-        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", p_type, "model.sdf")
+        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "gz_models", "demo_parts", p_type, "model.sdf")
         xml = ET.fromstring(self.get_sdf(file_path))
         
         r, g, b = self.colors[p_color]
@@ -341,7 +341,7 @@ class EnvironmentStartup(Node):
             self.get_logger().error("Error calling spawn_part service")
             
     def get_gear_xml(self, gear_size, color):
-        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", gear_size, "model.sdf")
+        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "gz_models", "demo_parts", gear_size, "model.sdf")
         self.get_logger().info(file_path)
         xml = ET.fromstring(self.get_sdf(file_path))
         
@@ -402,7 +402,7 @@ class EnvironmentStartup(Node):
     
     def get_tray_xml(self, tray_name, color):
         self.get_logger().info("Tray Name: "+ tray_name)
-        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "models", tray_name, "model.sdf")
+        file_path = os.path.join(get_package_share_directory("aprs_gz_sim"), "gz_models", "demo_parts", tray_name, "model.sdf")
         self.get_logger().info(file_path)
         xml = ET.fromstring(self.get_sdf(file_path))
         

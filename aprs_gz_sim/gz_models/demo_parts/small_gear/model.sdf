@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <model name="medium_gear_tray">
+  <model name="small_gear">
     <static>false</static>
     <allow_auto_disable>false</allow_auto_disable>
 
-    <link name="medium_gear_tray">
+    <link name="small_gear">
       <inertial>
         <pose>0 0 0.02 0 0 1.57</pose>
         <mass>0.7</mass>
@@ -18,10 +18,10 @@
         </inertia>
       </inertial>
       
-      <visual name="medium_gear_tray">
+      <visual name="small_gear_visual">
         <geometry>
           <mesh>
-            <uri>model://medium_gear_tray/meshes/medium_gear_part_tray.stl</uri>
+            <uri>model://demo_parts/small_gear/meshes/small_gear.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -30,11 +30,11 @@
         </material>
       </visual>
 
-      <collision name="medium_gear_tray_collision">
+      <collision name="small_gear_collision">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://medium_gear_tray/meshes/medium_gear_part_tray.stl</uri>
+            <uri>model://demo_parts/small_gear/meshes/small_gear.stl</uri>
           </mesh>
         </geometry>
         <max_contacts>20</max_contacts>

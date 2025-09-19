@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <model name="large_gear_tray">
+  <model name="m2l1_kit_tray">
     <static>false</static>
     <allow_auto_disable>false</allow_auto_disable>
 
-    <link name="large_gear_tray">
+    <link name="m2l1_kit_tray">
       <inertial>
         <pose>0 0 0.02 0 0 1.57</pose>
         <mass>0.7</mass>
@@ -18,10 +18,10 @@
         </inertia>
       </inertial>
       
-      <visual name="large_gear_tray">
+      <visual name="m2l1_kit_tray">
         <geometry>
           <mesh>
-            <uri>model://large_gear_tray/meshes/large_gear_part_tray.stl</uri>
+            <uri>model://demo_parts/m2l1_kit_tray/meshes/m2l1_kit_tray.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -30,15 +30,12 @@
         </material>
       </visual>
 
-      <collision name="large_gear_tray_collision">
+      <collision name="m2l1_kit_tray_collision">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://large_gear_tray/meshes/large_gear_part_tray.stl</uri>
+            <uri>model://demo_parts/m2l1_kit_tray/meshes/m2l1_kit_tray.stl</uri>
           </mesh>
-          <!-- <box>
-            <size> 0.210 0.138 0.015 </size>
-          </box> -->
         </geometry>
         <max_contacts>20</max_contacts>
         <surface>

@@ -53,8 +53,7 @@ class PartSpawnParams(SpawnParams):
     }
 
     def __init__(self, name, part_type, color, xyz=[0,0,0], rpy=[0,0,0], rf=''):
-        file_path = os.path.join(get_package_share_directory('aprs_gz_sim'), 
-            'models', part_type, 'model.sdf')
+        file_path = os.path.join(get_package_share_directory('aprs_gz_sim'), "gz_models", "demo_parts", part_type, 'model.sdf')
 
         super().__init__(name=name, file_path=file_path, xyz=xyz, rpy=rpy, rf=rf)
 
@@ -82,8 +81,7 @@ class PartSpawnParams(SpawnParams):
 
 class TraySpawnParams(SpawnParams):
     def __init__(self, name, marker_id, xyz=[0,0,0], rpy=[0,0,0], rf=''):
-        file_path = os.path.join(get_package_share_directory('ariac_gazebo'), 
-            'models', 'kit_tray', 'model.sdf')
+        file_path = os.path.join(get_package_share_directory('ariac_gazebo'), "gz_models", "demo_parts", 'kit_tray', 'model.sdf')
 
         super().__init__(name=name, file_path=file_path, xyz=xyz, rpy=rpy, rf=rf)
 
@@ -97,7 +95,7 @@ class TraySpawnParams(SpawnParams):
         
         xml = ET.fromstring(self.get_sdf(self.file_path))
 
-        marker_string = "model://kit_tray/meshes/markers/marker_" + self.marker_id + ".dae"
+        marker_string = "model://demo_parts/kit_tray/meshes/markers/marker_" + self.marker_id + ".dae"
         for elem in xml.find('model').find('link').findall('visual'): # type: ignore
             if elem.attrib['name'] == "marker":
                 elem.find("geometry").find("mesh").find("uri").text = marker_string # type: ignore

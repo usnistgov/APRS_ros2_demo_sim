@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <model name="battery">
+  <model name="large_gear">
     <static>false</static>
     <allow_auto_disable>false</allow_auto_disable>
 
-    <link name="battery_link">
+    <link name="large_gear">
       <inertial>
         <pose>0 0 0.02 0 0 1.57</pose>
         <mass>0.7</mass>
@@ -18,10 +18,11 @@
         </inertia>
       </inertial>
       
-      <visual name="base">
+      <visual name="large_gear_visual">
         <geometry>
           <mesh>
-            <uri>model://battery/meshes/battery_base.stl</uri>
+            <!-- <uri>model://large_gear/meshes/large_gear_simplified.stl</uri> -->
+            <uri>model://demo_parts/demo_parts/large_gear/meshes/large_gear.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -30,36 +31,12 @@
         </material>
       </visual>
 
-      <visual name="cap">
-        <geometry>
-          <mesh>
-            <uri>model://battery/meshes/battery_cap.stl</uri>
-          </mesh>
-        </geometry>
-        <material>
-          <ambient>0.318 0.318 0.318 1.0</ambient>
-          <diffuse>0.318 0.318 0.318 1.0</diffuse>
-        </material>
-      </visual>
-
-      <visual name="pins">
-        <geometry>
-          <mesh>
-            <uri>model://battery/meshes/battery_pins.stl</uri>
-          </mesh>
-        </geometry>
-        <material>
-          <ambient>1.0 0.843 0.0 1.0</ambient>
-          <diffuse>1.0 0.843 0.0 1.0</diffuse>
-        </material>
-      </visual>
-
-      <collision name="collision">
+      <collision name="large_gear_collision">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
-          <box>
-            <size>0.13 0.05 0.04</size>
-          </box>
+          <mesh>
+            <uri>model://demo_parts/large_gear/meshes/large_gear.stl</uri>
+          </mesh>
         </geometry>
         <max_contacts>20</max_contacts>
         <surface>

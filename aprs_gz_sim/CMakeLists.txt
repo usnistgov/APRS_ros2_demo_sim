@@ -32,7 +32,6 @@ install(DIRECTORY include/
 
 install(DIRECTORY
   launch
-  models
   gz_models
   worlds
   config
