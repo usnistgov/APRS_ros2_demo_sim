@@ -236,25 +236,9 @@ simulation/franka:
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
-      passthrough_controller:
-        type: passthrough_controller/PassthroughController
-
       joint_trajectory_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-  passthrough_controller:
-    ros__parameters:
-      joints:
-        - fr3_joint1
-        - fr3_joint2
-        - fr3_joint3      
-        - fr3_joint4
-        - fr3_joint5
-        - fr3_joint6
-        - fr3_joint7
-
-      real_robot_joint_states_topic: "/franka/joint_states"
-  
   joint_trajectory_controller:
     ros__parameters:
       joints:
@@ -328,23 +312,8 @@ simulation/ur:
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
-      passthrough_controller:
-        type: passthrough_controller/PassthroughController
-
       joint_trajectory_controller:
         type: joint_trajectory_controller/JointTrajectoryController
-
-  passthrough_controller:
-    ros__parameters:
-      joints:
-        - shoulder_pan_joint
-        - shoulder_lift_joint
-        - elbow_joint
-        - wrist_1_joint
-        - wrist_2_joint
-        - wrist_3_joint
-
-      real_robot_joint_states_topic: "/ur/joint_states"
   
   joint_trajectory_controller:
     ros__parameters:

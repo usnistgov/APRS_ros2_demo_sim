@@ -102,7 +102,7 @@ def launch_setup(context, *args, **kwargs):
         ))
         
         #Joint trajectory controllers
-        jt_controller_name = f'{robot}_joint_trajectory_controller'
+        jt_controller_name = f'joint_trajectory_controller'
         jt_arguments = [jt_controller_name]
         if mirror_env and robot in ["fanuc", "motoman"]:
             jt_arguments.append('--inactive')

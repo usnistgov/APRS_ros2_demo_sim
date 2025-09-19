@@ -19,7 +19,7 @@ class JointStatePublisher(Node):
         self.joint_names = ['joint_b', "joint_e", "joint_l", "joint_r", "joint_s", "joint_t", "joint_u"]
         
         # Initialize joint positions. These will be updated in the timer callback.
-        self.joint_positions = [0.0] * 7
+        self.joint_positions = [1.0] * 7
         
         # Set the publishing rate to 10 Hz
         timer_period = 0.1  # seconds
