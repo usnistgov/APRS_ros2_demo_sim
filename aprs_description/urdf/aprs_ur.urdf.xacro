@@ -12,30 +12,10 @@
   </joint>
 
   <xacro:include filename="$(find aprs_description)/urdf/ur/aprs_ur_macro.xacro"/>
-
-  <xacro:arg name="ur_controller" default="$(find aprs_description)/config/robot_controllers.yaml" />
-
-  <xacro:arg name="camera_active_arg" default="false"/>
-  <xacro:property name="camera_active" value="$(arg camera_active_arg)" />
-
-  <xacro:arg name="camera_type_arg" default="rgb"/>
-  <xacro:property name="camera_type" value="$(arg camera_type_arg)" />
   
   <xacro:aprs_ur
     parent="aprs_ur_base_link"
-    camera_active="${camera_active}"
-    camera_type="${camera_type}"
     >
   </xacro:aprs_ur>
-
-  <gazebo>
-    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <ros>
-        <namespace>simulation/ur</namespace>
-      </ros>
-      <parameters>$(arg ur_controller)</parameters>
-      <robot_param>robot_description</robot_param>
-    </plugin>
-  </gazebo>
 
 </robot>

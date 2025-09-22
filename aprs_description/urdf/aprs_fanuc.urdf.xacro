@@ -34,6 +34,7 @@
         <namespace>simulation/fanuc</namespace>
       </ros>
       <parameters>$(arg fanuc_controller)</parameters>
+      <load_params_directly>true</load_params_directly>
       <robot_param>robot_description</robot_param>
     </plugin>
   </gazebo>

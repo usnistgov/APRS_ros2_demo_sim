@@ -2,6 +2,10 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aprs_lab_robots">
 
   <link name="world"/>
+
+  <gazebo 
+      reference="world">
+  </gazebo>
   
   <link name="aprs_motoman_base_link"/>
 
@@ -34,6 +38,7 @@
         <namespace>simulation/motoman</namespace>
       </ros>
       <parameters>$(arg motoman_controller)</parameters>
+      <load_params_directly>true</load_params_directly>
       <robot_param>robot_description</robot_param>
     </plugin>
   </gazebo>

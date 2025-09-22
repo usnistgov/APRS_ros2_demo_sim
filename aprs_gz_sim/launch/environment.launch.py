@@ -54,25 +54,23 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    bridge_params = os.path.join(get_package_share_directory("aprs_gz_sim"),'config','gz_bridge.yaml')
-    ros_gz_bridge = Node(
+    gz_sim_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
         arguments=[
-            '--ros-args',
-            '-p',
-            f'config_file:={bridge_params}',
-        ]
+            "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
+        ],
+        output="screen",
     )
     
     return [
         gz,
         combined_robots,
         seperate_robots,
-        spawn_part_node,
-        environment_startup_node,
-        ros_gz_bridge
-        ]
+        # spawn_part_node,
+        # environment_startup_node,
+        gz_sim_bridge
+    ]
     
 def generate_launch_description():
     declared_arguments = []

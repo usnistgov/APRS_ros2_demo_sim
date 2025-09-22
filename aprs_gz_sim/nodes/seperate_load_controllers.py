@@ -48,7 +48,7 @@ class ControllerStarter(Node):
 
     async def configure_controllers(self):
         for name, controllers in self.robot_controllers.items():
-            client = self.create_client(ConfigureController, f"/{name}/controller_manager/configure_controller")
+            client = self.create_client(ConfigureController, f"/simulation/{name}/controller_manager/configure_controller")
             self.get_logger().info(f"Waiting for configure service to be ready for {name}")
             await ROSAsyncAdapter.await_service_ready(client)
             for controller in controllers:
@@ -65,15 +65,15 @@ class ControllerStarter(Node):
     
     async def switch_controllers(self):
         for name, controllers in self.robot_controllers.items():
-            client = self.create_client(SwitchController, f"/{name}/controller_manager/switch_controller")
-            self.get_logger().info(f"Waiting for activivate service for {name}")
+            client = self.create_client(SwitchController, f"/simulation/{name}/controller_manager/switch_controller")
+            self.get_logger().info(f"Waiting for activate service for {name}")
             await ROSAsyncAdapter.await_service_ready(client)
             req = SwitchController.Request()
             req.activate_controllers = controllers
             req.strictness = 1
             req.timeout = Duration(seconds=10).to_msg()
             
-            self.get_logger().info(f"Activating {", ".join(controllers)} for {name}")
+            self.get_logger().info(f"Activating {', '.join(controllers)} for {name}")
             result = await ROSAsyncAdapter.await_service_response(client, req)
 
             response = cast(SwitchController.Response, result)

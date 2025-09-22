@@ -32,7 +32,7 @@ def launch_setup(context, *args, **kwargs):
     controller_switchers = []
     mirror_nodes = []
 
-    robots=['fanuc', 'franka', 'motoman', 'ur']
+    # robots=['fanuc', 'franka', 'motoman', 'ur']
     robots=["motoman"]
     sensor_file = os.path.join(get_package_share_directory("aprs_gz_sim"), "config", "sensors.yaml")
 
@@ -82,41 +82,51 @@ def launch_setup(context, *args, **kwargs):
             output='screen',
             # name=f'{robot}_ros_gz_sim',
             arguments=[
-                    '-topic', f'simulation/{robot}/robot_description',        
-                    '-name', f'aprs_{robot}',
-                    '-allow_renaming', 'true']
+                "-string",
+                robot_description_content,
+                # '-topic', f'simulation/{robot}/robot_description',        
+                '-name', f'aprs_{robot}',
+                # '-allow_renaming', 'true'
+            ]
         ))
         
         # Joint state broadcaster
         joint_state_broadcasters.append(Node(
             package='controller_manager',
             executable='spawner',
-            name='joint_state_broadcaster_spawner',
-            namespace=f"simulation/{robot}",
-            arguments=[
-                'joint_state_broadcaster'
-            ],
-            parameters=[
-                {'use_sim_time': True},
-            ],
+            name=f'{robot}_joint_state_broadcaster_spawner',
+            arguments = ["joint_state_broadcaster", "-c", f"/simulation/{robot}/controller_manager"],
+            parameters=[{"use_sim_time": True}]
         ))
         
-        #Joint trajectory controllers
+        # Joint trajectory controllers
         jt_controller_name = f'joint_trajectory_controller'
-        jt_arguments = [jt_controller_name]
-        if mirror_env and robot in ["fanuc", "motoman"]:
-            jt_arguments.append('--inactive')
+        jt_arguments = [jt_controller_name, "-c", f"/simulation/{robot}/controller_manager"]
+        # if mirror_env and robot in ["fanuc", "motoman"]:
+        #     jt_arguments.append('--inactive')
 
         joint_trajectory_controllers.append(Node(
             package='controller_manager',
             executable='spawner',
-            name='controller_spawner',
-            namespace=f"simulation/{robot}",
+            name=f'{robot}_controller_spawner',
             arguments=jt_arguments,
             parameters=[
                 {'use_sim_time': True},
             ],
         ))
+
+        # joint_trajectory_controllers.append(Node(
+        #     package='controller_manager',
+        #     executable='spawner',
+        #     name='controller_spawner',
+        #     namespace=f"simulation/{robot}",
+        #     arguments=[
+        #         'joint_trajectory_controller'
+        #     ],
+        #     parameters=[
+        #         {'use_sim_time': True},
+        #     ],
+        # ))
         
         if mirror_env and robot in ["fanuc", "motoman"]:
             passthrough_controllers.append(Node(
